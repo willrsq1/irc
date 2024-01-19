@@ -10,7 +10,7 @@ Client::Client(int fd): hasPassword(false), hasSetNickname(false), isRegistered(
 	ss << (fd - 3);
 	this->nickname += ss.str();
 	realname = nickname;
-	username = nickname;
+	username = "~" + nickname;
 }
 
 void	Client::addChannel(std::string const & channelName, Channel * channel)

@@ -23,7 +23,7 @@ void	part(Server & server, Client & client, std::vector<std::string> & commands)
 
 std::vector<std::string> split(std::string & str, char delim);
 std::vector<std::string> basicSplit(std::string & str, char delim);
-bool	isAlreadyUsed(std::string const & str, std::string const & str2);
+bool	caseInsensitiveCheck(std::string const & str, std::string const & str2);
 
 
 #endif

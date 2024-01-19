@@ -6,7 +6,7 @@
 
 //x
 
-#define RPL_NEWNICKNAME(client, nickname) (client + " changed her nickname to " + nickname + "\r\n")
+#define RPL_NEWNICKNAME(client, username, new_nickname) ((std::string)":" + SRC_CLI(client, username) + " changed her nickname to " + new_nickname + "\r\n")
 
 //x
 

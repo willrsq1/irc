@@ -19,8 +19,10 @@ bool Channel::isClientInChannel(int fd)
 {
 	for (it_clients it = this->clients.begin(); it != this->clients.end(); it++)
 	{
+		
 		if ((*it).second->getFd() == fd)
 			return (true);
+
 	}
 	return (false);
 }
@@ -34,7 +36,9 @@ void Channel::sendToAllClients(std::string const & message)
 {
 	for (it_clients it = this->clients.begin(); it != this->clients.end(); it++)
 	{
+
 		server->sendToClient((*it).second->getFd(), message);
+
 	}
 }
 
@@ -47,11 +51,13 @@ void Channel::removeOperator(std::string const & nickname)
 {
 	for (std::vector<std::string>::iterator it = this->operators.begin(); it != this->operators.end(); it++)
 	{
+
 		if (*it == nickname)
 		{
 			this->operators.erase(it);
 			return ;
 		}
+
 	}
 }
 
@@ -59,8 +65,10 @@ bool Channel::isOperator(std::string const & nickname)
 {
 	for (std::vector<std::string>::iterator it = this->operators.begin(); it != this->operators.end(); it++)
 	{
+
 		if (*it == nickname)
 			return (true);
+
 	}
 	return (false);
 }
@@ -69,6 +77,7 @@ void Channel::removeClient(int fd)
 {
 	for (it_clients it = this->clients.begin(); it != this->clients.end(); it++)
 	{
+
 		if ((*it).second->getFd() == fd)
 		{
 			if (this->isOperator((*it).second->getNickname()))
@@ -76,6 +85,7 @@ void Channel::removeClient(int fd)
 			this->clients.erase(it);
 			break ;
 		}
+
 	}
 
 	if (this->clients.size() == 0)
@@ -94,7 +104,6 @@ void Channel::removeClient(int fd)
 void Channel::setNewOperator(std::string const & nickname)
 {
 	this->operators.push_back(nickname);
-	
-		server->sendToClient(this->clients.begin()->second->getFd(), "you are now operator of this channel\r\n");
+	server->sendToClient(this->clients.begin()->second->getFd(), "you are now operator of this channel\r\n");
 	// server->sendToClient(this->clients.begin()->second->getFd(), MODE(this->clients.begin()->second->getNickname(), this->name, "+o", nickname));
 }

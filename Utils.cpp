@@ -40,7 +40,7 @@ std::vector<std::string> basicSplit(std::string & str, char delim)
 	return (tokens);
 }
 
-bool	isAlreadyUsed(std::string const & str, std::string const & str2)
+bool	caseInsensitiveCheck(std::string const & str, std::string const & str2)
 {
 	std::string strToUpper = str;
 	std::transform(strToUpper.begin(), strToUpper.end(), strToUpper.begin(), ::toupper);

@@ -17,7 +17,7 @@
 
 #define BUFFER_SIZE 4096
 #define HOST "localhost"
-#define SERVER "ARBESA_SERVER_WOW_OMG"
+#define SERVER "ARBESA_SERVER"
 #define USERLEN 20
 #define USERMODE "jspUSERMODE"
 #define CHANMODE "jspCHANMODE"
