@@ -12,10 +12,11 @@ NAME    = ircserv
 SOURCES =	main.cpp \
 			Server.cpp \
 			Client.cpp \
-			Split.cpp \
+			Utils.cpp \
 			Join.cpp \
 			Pass.cpp \
 			Nick.cpp \
+			User.cpp \
 			
 OBJS    = $(SOURCES:.cpp=.o)
 

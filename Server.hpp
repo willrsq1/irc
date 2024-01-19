@@ -16,6 +16,10 @@
 
 #define BUFFER_SIZE 4096
 #define HOST "localhost"
+#define SERVER "ARBESA_SERVER_WOW_OMG"
+#define USERLEN 20
+#define USERMODE "jspUSERMODE"
+#define CHANMODE "jspCHANMODE"
 
 class Client;
 
@@ -36,6 +40,8 @@ class Server
 		std::string 		password;
 		int					nbSockets;
 
+		std::string 		creationDate;
+
 		Server();
 		void loop();
 		void createMySocket(int port);
@@ -43,6 +49,7 @@ class Server
 		void newMessage(int i);
 		void commandExecution(std::string & command, int i);
 		void registerCommand();
+		void registerDateCreation();
 
 
 	public:
@@ -52,6 +59,7 @@ class Server
 		void disconnectClient(Client & client);
 		std::string getPassword();
 		void sendToClient(int fd, std::string const & message);
+		std::string getCreationDate();
 
 		it_clients getClientsMapEnd();
 		it_clients getClientsMapBegin();

@@ -16,6 +16,8 @@ Server::Server(std::string const & port, std::string const & password): password
 
 	if (port_nb != 6667)
 		throw std::runtime_error("Error: port must be 6667 for TCP connections");
+	
+	registerDateCreation();
 	registerCommand();
 	createMySocket(port_nb);
 	loop();
@@ -26,6 +28,7 @@ void	Server::registerCommand()
 	commands["JOIN"] = &join;
 	commands["PASS"] = &pass;
 	commands["NICK"] = &nick;
+	commands["USER"] = &user;
 	// functions["/join"] = &join;
 	// functions["/leave"] = &leave;
 	// functions["/msg"] = &msg;
@@ -112,10 +115,9 @@ void	Server::newClient()
 	pollfds[nbSockets].revents = 0;
 
 
-	clients[clientSocketFd] = new Client();
-	clients[clientSocketFd]->setFd(clientSocketFd);
+	clients[clientSocketFd] = new Client(clientSocketFd);
 	clients[clientSocketFd]->setiPoll(nbSockets);
-	std::cout << "New client connected :" << clients[clientSocketFd]->getName() << std::endl;
+	std::cout << "New client connected :" << clients[clientSocketFd]->getNickname() << std::endl;
 	nbSockets++;
 }
 
@@ -134,18 +136,31 @@ void	Server::newMessage(int i)
 		disconnectClient(*clients[pollfds[i].fd]);
 		return ;
 	}
+	else if (ret == 512)
+	{
+		sendToClient(pollfds[i].fd, ERR_INPUTTOOLONG(clients[pollfds[i].fd]->getNickname()));
+		return ;
+	}
 	buff[ret] = '\0';
 
 	socketBuff += buff;
 
-	size_t pos = socketBuff.find("\n");
-	
-	if (pos != std::string::npos)
+
+	size_t pos = socketBuff.find("\r\n");
+	if (pos == std::string::npos)
+		pos = socketBuff.find("\n");
+	while (pos != std::string::npos)
 	{
 		std::string command = socketBuff.substr(0, pos);
-		socketBuff.erase(0, pos + 1);
+		socketBuff.erase(0, pos + 2);
 		commandExecution(command, pollfds[i].fd);
+		if (clients.find(pollfds[i].fd) == clients.end())
+			return ;
+		pos = socketBuff.find("\r\n");
+		if (pos == std::string::npos)
+			pos = socketBuff.find("\n");
 	}
+	
 }
 
 void	Server::commandExecution(std::string & command, int clientSocket)
@@ -156,7 +171,7 @@ void	Server::commandExecution(std::string & command, int clientSocket)
 	{
 		if (tokens[0] != "PASS" && clients[clientSocket]->getHasPassword() == false)
 		{
-			sendToClient(clientSocket, ERR_NOTREGISTERED(clients[clientSocket]->getName()));
+			sendToClient(clientSocket, ERR_FATALERROR("You must send connect with the right password first"));
 		}
 		else
 		{
@@ -171,6 +186,7 @@ void	Server::sendToClient(int fd, std::string const & message)
 {
 	if (send(fd, message.c_str(), message.size(), 0) == -1)
 		throw std::runtime_error("Error: send failed");
+	std::cout << (std::string)BLUE << "SENT TO CLIENT [" << fd - 3 << "] : " << message << NOCOLOR;
 }
 
 void	Server::disconnectClient(Client & client)
@@ -206,4 +222,22 @@ it_clients Server::getClientsMapEnd()
 it_clients Server::getClientsMapBegin()
 {
 	return clients.begin();
+}
+
+void Server::registerDateCreation()
+{
+	time_t rawtime;
+	struct tm * timeinfo;
+	char buffer[80];
+
+	time (&rawtime);
+	timeinfo = localtime(&rawtime);
+
+	strftime(buffer, sizeof(buffer), "%a %b %d %H:%M:%S %Y", timeinfo);
+	creationDate = buffer;
+}
+
+std::string Server::getCreationDate()
+{
+	return creationDate;
 }
