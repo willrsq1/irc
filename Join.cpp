@@ -22,6 +22,11 @@ void	join(Server & server, Client & client, std::vector<std::string> & commands)
 		return ;
 	}
 
+	if (commands[1].size() == 1)
+	{
+		server.sendToClient(client.getFd(), ERR_FATALERROR("Invalid channel name. Cannot create channel."));
+	}
+
 	if (commands[1].find(' ') != std::string::npos || commands[1].find(0x07) != std::string::npos || commands[1].find(',') != std::string::npos)
 	{
 		server.sendToClient(client.getFd(), ERR_FATALERROR("Invalid characters in channel name. Cannot create channel."));

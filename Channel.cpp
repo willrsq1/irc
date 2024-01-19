@@ -71,6 +71,8 @@ void Channel::removeClient(int fd)
 	{
 		if ((*it).second->getFd() == fd)
 		{
+			if (this->isOperator((*it).second->getNickname()))
+				this->operators.erase(std::find(this->operators.begin(), this->operators.end(), (*it).second->getNickname()));
 			this->clients.erase(it);
 			break ;
 		}
@@ -78,7 +80,7 @@ void Channel::removeClient(int fd)
 
 	if (this->clients.size() == 0)
 	{
-		// server->removeChannel(this->name);
+		server->removeChannel(this->name);
 		delete this;
 		return ;
 	}
@@ -92,6 +94,7 @@ void Channel::removeClient(int fd)
 void Channel::setNewOperator(std::string const & nickname)
 {
 	this->operators.push_back(nickname);
-	server->sendToClient(this->clients.begin()->second->getFd(), "you are now operator of this channel");
+	
+		server->sendToClient(this->clients.begin()->second->getFd(), "you are now operator of this channel\r\n");
 	// server->sendToClient(this->clients.begin()->second->getFd(), MODE(this->clients.begin()->second->getNickname(), this->name, "+o", nickname));
 }

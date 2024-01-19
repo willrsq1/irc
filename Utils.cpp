@@ -25,7 +25,7 @@ std::vector<std::string> split(std::string & str, char delim)
 	return (tokens);
 }
 
-std::vector<std::string> splitPrivMsg(std::string & str, char delim)
+std::vector<std::string> basicSplit(std::string & str, char delim)
 {
 	std::vector<std::string> tokens;
 

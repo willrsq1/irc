@@ -17,6 +17,9 @@
 #define PRIVMSG(client, username, target, message) ((std::string)":" + SRC_CLI(client, username) + " PRIVMSG " + target + " :" + message + "\r\n")
 
 
+#define PART(client, username, target, reason) ((std::string)":" + SRC_CLI(client, username) + " is leaving the channel " + target + " for the reason: " + reason + "\r\n")
+
+
 
 //001
 #define RPL_WELCOME(client, username) ((std::string)":" + SERVER + " 001 " + client + " :Welcome to the " + SERVER + " Network, " + SRC_CLI(client, username) + "\r\n")
@@ -36,6 +39,8 @@
 
 //403
 #define ERR_NOSUCHCHANNEL(client, channel) ((std::string)":" + SERVER + " 403 " + client + " " + channel + " :No such channel\r\n")
+//404
+#define ERR_CANNOTSENDTOCHAN(client, channel) ((std::string)":" + SERVER + " 404 " + client + " " + channel + " :Cannot send to channel\r\n")
 
 //411
 #define ERR_NORECIPIENT(client, command) ((std::string)":" + SERVER + " 411 " + client + " :No recipient given " + command + "\r\n")
@@ -53,6 +58,10 @@
 #define ERR_ERRONEUSNICKNAME(client, nickname, msg) ((std::string)":" + SERVER + " 432 " + client + " " + nickname + " :" + msg + "\r\n")
 //433
 #define ERR_NICKNAMEINUSE(client, nickname) ((std::string)":" + SERVER + " 433 " + client + " " + nickname + " :Nickname is already in use\r\n")
+
+//442
+#define ERR_NOTONCHANNEL(client, channel) ((std::string)":" + SERVER + " 442 " + client + " " + channel + " :You're not on that channel\r\n")
+
 
 //451
 #define ERR_NOTREGISTERED(client) ((std::string)":" + SERVER + " 451 " + client + " :You have not registered\r\n")

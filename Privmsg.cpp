@@ -28,7 +28,7 @@ void	privmsg(Server & server, Client & client, std::vector<std::string> & comman
 		return ;
 	}
 
-	std::vector<std::string> tokens = splitPrivMsg(commands[1], ',');
+	std::vector<std::string> tokens = basicSplit(commands[1], ',');
 	for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it)
 	{
 		sendmsg(server, client, commands, *it);
@@ -63,7 +63,7 @@ static void	sendmsg(Server & server, Client & client, std::vector<std::string> &
 				}
 				else
 				{
-					// server.sendToClient(client.getFd(), ERR_CANNOTSENDTOCHAN(client.getNickname(), target));
+					server.sendToClient(client.getFd(), ERR_CANNOTSENDTOCHAN(client.getNickname(), target));
 					return ;
 				}
 			}
@@ -71,7 +71,7 @@ static void	sendmsg(Server & server, Client & client, std::vector<std::string> &
 	}
 	else
 	{	
-		for (it_clients it = server. getClientsBegin(); it != server. getClientsEnd(); it++)
+		for (it_clients it = server.getClientsBegin(); it != server.getClientsEnd(); it++)
 		{
 			if (it->second->getNickname() == target)
 			{

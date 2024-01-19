@@ -26,10 +26,6 @@ void	Client::removeChannel(std::string const & channelName)
 Client::~Client()
 {
 	close(this->my_fd);
-	for (it_channels it = this->channels.begin(); it != this->channels.end(); it++)
-	{
-		(*it).second->removeClient(this->my_fd);
-	}
 }
 
 void	Client::setFd(int fd)
@@ -115,4 +111,14 @@ void Client::setHasSetNickname(bool hasSetNickname)
 bool Client::getHasSetNickname()
 {
 	return (this->hasSetNickname);
+}
+
+it_channels Client::getChannelsBegin()
+{
+	return (this->channels.begin());
+}
+
+it_channels Client::getChannelsEnd()
+{
+	return (this->channels.end());
 }

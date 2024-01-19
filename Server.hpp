@@ -36,6 +36,7 @@ class Server
 
 	private:
 
+		bool 					shutting_down;
 
 		std::map<std::string, fct> 	commands;
 
@@ -77,6 +78,9 @@ class Server
 		it_channels getChannelsEnd();
 
 		void addChannel(std::string const & channelName, Channel * channel);
+		void removeChannel(std::string const & channelName);
+
+		void removeClientFromChannel(std::string const & channelName, int fd);
 
 		static void mySigIntHandler(int s);
 		static bool 				running;

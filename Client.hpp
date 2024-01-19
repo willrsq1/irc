@@ -54,6 +54,8 @@ class Client
 
 		void	addChannel(std::string const & channelName, Channel * channel);
 		void	removeChannel(std::string const & channelName);
+		it_channels getChannelsBegin();
+		it_channels getChannelsEnd();
 };
 
 #include "Channel.hpp"

@@ -19,6 +19,7 @@ SOURCES =	main.cpp \
 			Nick.cpp \
 			User.cpp \
 			Privmsg.cpp \
+			Part.cpp \
 			
 OBJS    = $(SOURCES:.cpp=.o)
 

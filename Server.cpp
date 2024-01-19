@@ -6,7 +6,7 @@ Server::Server(){}
 
 bool Server::running = true;
 
-Server::Server(std::string const & port, std::string const & password): password(password), nbSockets(0)
+Server::Server(std::string const & port, std::string const & password):shutting_down(false), password(password), nbSockets(0)
 {
 	for (size_t i = 0; i < port.size(); i++)
 	{
@@ -32,6 +32,7 @@ void	Server::registerCommand()
 	commands["USER"] = &user;
 	commands["PRIVMSG"] = &privmsg;
 	commands["JOIN"] = &join;
+	commands["PART"] = &part;
 	// functions["/join"] = &join;
 	// functions["/leave"] = &leave;
 	// functions["/msg"] = &msg;
@@ -42,16 +43,19 @@ void	Server::registerCommand()
 
 Server::~Server()
 {
+	
 	for (int i = 0; i < nbSockets; i++)
 	{
 		close(pollfds[i].fd);
 	}
 
+	shutting_down = true;
+
 	for (it_clients it = clients.begin(); it != clients.end(); it++)
 	{
 		delete it->second;
 	}
-	
+
 	for (it_channels it = channels.begin(); it != channels.end(); it++)
 	{
 		delete it->second;
@@ -190,18 +194,18 @@ void	Server::commandExecution(std::string & command, int clientSocket)
 
 	if (tokens.size() > 0 && commands.find(tokens[0]) != commands.end())
 	{
-		if (tokens[0] != "PASS" && clients[clientSocket]->getHasPassword() == false)
-		{
-			sendToClient(clientSocket, ERR_FATALERROR("You must send connect with the right password first"));
-		}
-		else if ((*clients[clientSocket]).getIsRegistered() == false && tokens[0] != "PASS" && tokens[0] != "NICK" && tokens[0] != "USER")
-		{
-			sendToClient(clientSocket, ERR_NOTREGISTERED());
-		}
-		else
-		{
+		// if (tokens[0] != "PASS" && clients[clientSocket]->getHasPassword() == false)
+		// {
+		// 	sendToClient(clientSocket, ERR_FATALERROR("You must send connect with the right password first"));
+		// }
+		// else if ((*clients[clientSocket]).getIsRegistered() == false && tokens[0] != "PASS" && tokens[0] != "NICK" && tokens[0] != "USER")
+		// {
+		// 	sendToClient(clientSocket, ERR_NOTREGISTERED());
+		// }
+		// else
+		// {
 			commands[tokens[0]](*this, *clients[clientSocket], tokens);
-		}
+		// }
 	}
 	std::cout << "Message from client nb [" << clientSocket - 3 << "] : " << command << std::endl;
 
@@ -209,6 +213,8 @@ void	Server::commandExecution(std::string & command, int clientSocket)
 
 void	Server::sendToClient(int fd, std::string const & message)
 {
+	if (shutting_down == true)
+		return ;
 	if (send(fd, message.c_str(), message.size(), 0) == -1)
 		throw std::runtime_error("Error: send failed");
 	std::cout << (std::string)BLUE << "SENT TO CLIENT [" << fd - 3 << "] : " << message << NOCOLOR;
@@ -223,6 +229,11 @@ void	Server::disconnectClient(Client & client)
 	pollfds[i] = pollfds[nbSockets - 1]; //move last client to the empty slot
 	clients[pollfds[i].fd]->setiPoll(i); //update the index of the client in the pollfds array
 	
+
+	for (it_channels it = client.getChannelsBegin(); it != client.getChannelsEnd(); it++)
+	{
+		it->second->removeClient(client.getFd());
+	}
 
 	clients.erase(client.getFd());
 	delete &client;
@@ -239,7 +250,7 @@ std::string Server::getPassword()
 	return password;
 }
 
-it_clients Server:: getClientsBegin()
+it_clients Server::getClientsBegin()
 {
 	return clients.begin();
 }
@@ -306,4 +317,16 @@ void Server::sendToAllClientsInChannel(std::string const & channelName, std::str
 void Server::addChannel(std::string const & channelName, Channel * channel)
 {
 	channels[channelName] = channel;
+}
+
+void Server::removeChannel(std::string const & channelName)
+{
+	if (channels.find(channelName) != channels.end())
+		channels.erase(channelName);
+}
+
+void Server::removeClientFromChannel(std::string const & channelName, int fd)
+{
+	clients[fd]->removeChannel(channelName);
+	channels[channelName]->removeClient(fd);
 }
