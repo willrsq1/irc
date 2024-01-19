@@ -34,11 +34,11 @@ void	user(Server & server, Client & client, std::vector<std::string> & commands)
 
 // parsing des caracs autorisés ?
 
-	if (commands[2] != "0" || commands[3] != "*")
-	{
-		server.sendToClient(client.getFd(), ERR_FATALERROR("The second parameter must be '0', the third parameter must be '*'"));
-		return ;
-	}
+	// if (commands[2] != "0" || commands[3] != "*")
+	// {
+	// 	server.sendToClient(client.getFd(), ERR_FATALERROR("The second parameter must be '0', the third parameter must be '*'"));
+	// 	return ;
+	// }
 
 	commands[1] = "~" + commands[1];
 

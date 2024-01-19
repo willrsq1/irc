@@ -4,10 +4,17 @@
 #include <iostream>
 #include <unistd.h>
 #include <sstream>
+#include <map>
+
+class Channel;
+
+typedef	typename std::map<std::string, Channel *>::iterator it_channels;
 
 class Client
 {
 	private:
+
+		std::map<std::string, Channel *> channels;
 
 		bool 			hasPassword;
 		bool			hasSetNickname;
@@ -44,6 +51,11 @@ class Client
 		void	setRealname(std::string &);
 		void	setiPoll(int);
 		void	setFd(int);
+
+		void	addChannel(std::string const & channelName, Channel * channel);
+		void	removeChannel(std::string const & channelName);
 };
+
+#include "Channel.hpp"
 
 #endif

@@ -34,6 +34,8 @@
 //401
 #define ERR_NOSUCHNICK(client, target) ((std::string)":" + SERVER + " 401 " + client + " " + target + " :No such nick/channel\r\n")
 
+//403
+#define ERR_NOSUCHCHANNEL(client, channel) ((std::string)":" + SERVER + " 403 " + client + " " + channel + " :No such channel\r\n")
 
 //411
 #define ERR_NORECIPIENT(client, command) ((std::string)":" + SERVER + " 411 " + client + " :No recipient given " + command + "\r\n")

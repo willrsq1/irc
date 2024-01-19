@@ -29,7 +29,7 @@ void	nick(Server & server, Client & client, std::vector<std::string> & commands)
 
 	//check if nickname already in use
 
-	for (it_clients it = server.getClientsMapBegin() ; it != server.getClientsMapEnd() ; it++)
+	for (it_clients it = server. getClientsBegin() ; it != server. getClientsEnd() ; it++)
 	{
 		if (isAlreadyUsed(commands[1], it->second->getNickname()) == true)
 		{
@@ -40,7 +40,7 @@ void	nick(Server & server, Client & client, std::vector<std::string> & commands)
 	
 	//send to all clients the update of nickname
 
-	for (it_clients it = server.getClientsMapBegin() ; it != server.getClientsMapEnd() ; it++)
+	for (it_clients it = server. getClientsBegin() ; it != server. getClientsEnd() ; it++)
 	{
 		if (it->second->getFd() != client.getFd())
 		{

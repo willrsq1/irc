@@ -13,9 +13,23 @@ Client::Client(int fd): hasPassword(false), hasSetNickname(false), isRegistered(
 	username = nickname;
 }
 
+void	Client::addChannel(std::string const & channelName, Channel * channel)
+{
+	this->channels[channelName] = channel;
+}
+
+void	Client::removeChannel(std::string const & channelName)
+{
+	this->channels.erase(channelName);
+}
+
 Client::~Client()
 {
 	close(this->my_fd);
+	for (it_channels it = this->channels.begin(); it != this->channels.end(); it++)
+	{
+		(*it).second->removeClient(this->my_fd);
+	}
 }
 
 void	Client::setFd(int fd)

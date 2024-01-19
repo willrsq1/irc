@@ -12,6 +12,7 @@ NAME    = ircserv
 SOURCES =	main.cpp \
 			Server.cpp \
 			Client.cpp \
+			Channel.cpp \
 			Utils.cpp \
 			Join.cpp \
 			Pass.cpp \

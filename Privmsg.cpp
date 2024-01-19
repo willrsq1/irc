@@ -43,14 +43,35 @@ static void	sendmsg(Server & server, Client & client, std::vector<std::string> &
 		server.sendToClient(client.getFd(), ERR_NORECIPIENT(client.getNickname(), "(PRIVMSG)"));
 		return ;
 	}
+
 	if (target[0] == '$' && target.substr(1) == (std::string)SERVER)
 	{
 		server.sendToAllClients(PRIVMSG(client.getNickname(), client.getUsername(), target, commands[2]));
 		return ;
 	}
-	else if (target[0] != '#')
+	else if (target[0] == '#')
+	{
+		for (it_channels it = server.getChannelsBegin(); it != server.getChannelsEnd(); it++)
+		{
+			if (it->first == target)
+			{
+				//gestion d'erreur a faire (ban, kick, etc)
+				if (it->second->isClientInChannel(client.getFd()))
+				{
+					server.sendToAllClientsInChannel(it->second->getName(), PRIVMSG(client.getNickname(), client.getUsername(), target, commands[2]));
+					return ;
+				}
+				else
+				{
+					// server.sendToClient(client.getFd(), ERR_CANNOTSENDTOCHAN(client.getNickname(), target));
+					return ;
+				}
+			}
+		}
+	}
+	else
 	{	
-		for (it_clients it = server.getClientsMapBegin(); it != server.getClientsMapEnd(); it++)
+		for (it_clients it = server. getClientsBegin(); it != server. getClientsEnd(); it++)
 		{
 			if (it->second->getNickname() == target)
 			{

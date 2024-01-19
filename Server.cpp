@@ -27,11 +27,11 @@ Server::Server(std::string const & port, std::string const & password): password
 
 void	Server::registerCommand()
 {
-	commands["JOIN"] = &join;
 	commands["PASS"] = &pass;
 	commands["NICK"] = &nick;
 	commands["USER"] = &user;
 	commands["PRIVMSG"] = &privmsg;
+	commands["JOIN"] = &join;
 	// functions["/join"] = &join;
 	// functions["/leave"] = &leave;
 	// functions["/msg"] = &msg;
@@ -42,13 +42,19 @@ void	Server::registerCommand()
 
 Server::~Server()
 {
+	for (int i = 0; i < nbSockets; i++)
+	{
+		close(pollfds[i].fd);
+	}
+
 	for (it_clients it = clients.begin(); it != clients.end(); it++)
 	{
 		delete it->second;
 	}
-	for (int i = 0; i < nbSockets; i++)
+	
+	for (it_channels it = channels.begin(); it != channels.end(); it++)
 	{
-		close(pollfds[i].fd);
+		delete it->second;
 	}
 }
 
@@ -233,14 +239,24 @@ std::string Server::getPassword()
 	return password;
 }
 
-it_clients Server::getClientsMapEnd()
+it_clients Server:: getClientsBegin()
+{
+	return clients.begin();
+}
+
+it_clients Server:: getClientsEnd()
 {
 	return clients.end();
 }
 
-it_clients Server::getClientsMapBegin()
+it_channels Server::getChannelsBegin()
 {
-	return clients.begin();
+	return channels.begin();
+}
+
+it_channels Server::getChannelsEnd()
+{
+	return channels.end();
 }
 
 void Server::registerDateCreation()
@@ -273,4 +289,21 @@ void Server::sendToAllClients(std::string const & message)
 	{
 		sendToClient(it->second->getFd(), message);
 	}
+}
+
+void Server::sendToAllClientsInChannel(std::string const & channelName, std::string const & message)
+{
+	for (it_channels it = channels.begin(); it != channels.end(); it++)
+	{
+		if (it->first == channelName)
+		{
+			it->second->sendToAllClients(message);
+			return ;
+		}
+	}
+}
+
+void Server::addChannel(std::string const & channelName, Channel * channel)
+{
+	channels[channelName] = channel;
 }

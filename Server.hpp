@@ -24,8 +24,11 @@
 #define CHANLIMIT 5
 
 class Client;
+class Channel;
+
 
 typedef	typename std::map<int, Client *>::iterator 	it_clients;
+typedef	typename std::map<std::string, Channel *>::iterator it_channels;
 
 class Server
 {
@@ -38,6 +41,7 @@ class Server
 
 		std::map<int, Client *> 	clients;
 
+		std::map<std::string, Channel *> 	channels;
 
 		pollfd 				pollfds[SOMAXCONN];
 		std::string 		password;
@@ -63,10 +67,16 @@ class Server
 		std::string getPassword();
 		void sendToClient(int fd, std::string const & message);
 		void sendToAllClients(std::string const & message);
+		void sendToAllClientsInChannel(std::string const & channelName, std::string const & message);
 		std::string getCreationDate();
 
-		it_clients getClientsMapEnd();
-		it_clients getClientsMapBegin();
+		it_clients  getClientsBegin();
+		it_clients  getClientsEnd();
+
+		it_channels getChannelsBegin();
+		it_channels getChannelsEnd();
+
+		void addChannel(std::string const & channelName, Channel * channel);
 
 		static void mySigIntHandler(int s);
 		static bool 				running;
@@ -74,6 +84,7 @@ class Server
 };
 
 #include "Client.hpp"
+#include "Channel.hpp"
 #include "Commands.hpp"
 
 #endif
