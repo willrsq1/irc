@@ -13,10 +13,28 @@ std::vector<std::string> split(std::string & str, char delim)
 	{
 		if (token[0] == ':')
 		{
-			token.erase(0, 1);
-			tokenStream >> token;
-			std::cout << "token is: " << token << std::endl;
+			token = token.substr(1);
+			std::string final_token;
+			while (std::getline(tokenStream, final_token, delim))
+			{
+				token += (std::string)" " + final_token;
+			}
 		}
+		tokens.push_back(token);
+	}
+	return (tokens);
+}
+
+std::vector<std::string> splitPrivMsg(std::string & str, char delim)
+{
+	std::vector<std::string> tokens;
+
+	std::string token;
+
+	std::istringstream tokenStream(str.c_str());
+
+	while (std::getline(tokenStream, token, delim))
+	{
 		tokens.push_back(token);
 	}
 	return (tokens);

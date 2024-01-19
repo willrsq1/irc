@@ -14,6 +14,7 @@
 
 #define SRC_CLI(client, username) (client + "!" + username + "@" + HOST)
 
+#define PRIVMSG(client, username, target, message) ((std::string)":" + SRC_CLI(client, username) + " PRIVMSG " + target + " :" + message + "\r\n")
 
 
 
@@ -28,6 +29,16 @@
 //005
 #define RPL_ISUPPORT(client) ((std::string)":" + SERVER + " 005 " + client + " PREFIX=(ov)@+ CHANTYPES=#&+ CHANMODES=" + CHANMODE + " NICKLEN=20 TOPICLEN=50 KICKLEN=50 MODES=3 NETWORK=" + SERVER + " CASEMAPPING=ascii :are supported by this server\r\n")
 
+
+
+//401
+#define ERR_NOSUCHNICK(client, target) ((std::string)":" + SERVER + " 401 " + client + " " + target + " :No such nick/channel\r\n")
+
+
+//411
+#define ERR_NORECIPIENT(client, command) ((std::string)":" + SERVER + " 411 " + client + " :No recipient given " + command + "\r\n")
+//412
+#define ERR_NOTEXTTOSEND(client) ((std::string)":" + SERVER + " 412 " + client + " :No text to send\r\n")
 
 
 //417

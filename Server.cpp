@@ -4,6 +4,8 @@
 
 Server::Server(){}
 
+bool Server::running = true;
+
 Server::Server(std::string const & port, std::string const & password): password(password), nbSockets(0)
 {
 	for (size_t i = 0; i < port.size(); i++)
@@ -29,6 +31,7 @@ void	Server::registerCommand()
 	commands["PASS"] = &pass;
 	commands["NICK"] = &nick;
 	commands["USER"] = &user;
+	commands["PRIVMSG"] = &privmsg;
 	// functions["/join"] = &join;
 	// functions["/leave"] = &leave;
 	// functions["/msg"] = &msg;
@@ -39,6 +42,14 @@ void	Server::registerCommand()
 
 Server::~Server()
 {
+	for (it_clients it = clients.begin(); it != clients.end(); it++)
+	{
+		delete it->second;
+	}
+	for (int i = 0; i < nbSockets; i++)
+	{
+		close(pollfds[i].fd);
+	}
 }
 
 void Server::createMySocket(int port)
@@ -51,11 +62,10 @@ void Server::createMySocket(int port)
 	if (setsockopt(serverSocketFd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
 		throw std::runtime_error("Error: setsockopt(SO_REUSEADDR) failed");
 	
-
 	sockaddr_in serverAddress;
 	serverAddress.sin_family = AF_INET;
 	serverAddress.sin_port = htons(port);
-	serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+	serverAddress.sin_addr.s_addr = inet_addr("0.0.0.0");
 
 	if (bind(serverSocketFd, (sockaddr *)&serverAddress, sizeof(serverAddress)) == -1)
 		throw std::runtime_error("Error: bind failed");
@@ -72,11 +82,15 @@ void Server::createMySocket(int port)
 
 void	Server::loop()
 {
-	while (1)
+	while (running == true)
 	{
 		int ret = poll(pollfds, nbSockets, 1000);
 		if (ret == -1)
+		{
+			if (running == false)
+				break ;
 			throw std::runtime_error("Error: poll failed");
+		}
 		else if (ret == 0)
 			continue ;
 		for (int i = 0; i < nbSockets; i++)
@@ -97,6 +111,7 @@ void	Server::loop()
 			}
 		}
 	}
+	std::cerr << "Server is shutting down" << std::endl;
 }
 
 
@@ -173,6 +188,10 @@ void	Server::commandExecution(std::string & command, int clientSocket)
 		{
 			sendToClient(clientSocket, ERR_FATALERROR("You must send connect with the right password first"));
 		}
+		else if ((*clients[clientSocket]).getIsRegistered() == false && tokens[0] != "PASS" && tokens[0] != "NICK" && tokens[0] != "USER")
+		{
+			sendToClient(clientSocket, ERR_NOTREGISTERED());
+		}
 		else
 		{
 			commands[tokens[0]](*this, *clients[clientSocket], tokens);
@@ -240,4 +259,18 @@ void Server::registerDateCreation()
 std::string Server::getCreationDate()
 {
 	return creationDate;
+}
+
+void Server::mySigIntHandler(int s)
+{
+	std::cout << std::endl << "Caught signal " << s << std::endl;
+	Server::running = false;
+}
+
+void Server::sendToAllClients(std::string const & message)
+{
+	for (it_clients it = clients.begin(); it != clients.end(); it++)
+	{
+		sendToClient(it->second->getFd(), message);
+	}
 }

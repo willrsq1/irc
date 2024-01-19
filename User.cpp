@@ -36,7 +36,7 @@ void	user(Server & server, Client & client, std::vector<std::string> & commands)
 
 	if (commands[2] != "0" || commands[3] != "*")
 	{
-		server.sendToClient(client.getFd(), ERR_FATALERROR("The second parrameter must be '0', the third parameter must be '*'"));
+		server.sendToClient(client.getFd(), ERR_FATALERROR("The second parameter must be '0', the third parameter must be '*'"));
 		return ;
 	}
 
@@ -45,7 +45,6 @@ void	user(Server & server, Client & client, std::vector<std::string> & commands)
 	client.setUsername(commands[1]);
 	client.setRealname(commands[4]);
 	client.setIsRegistered(true);
-
 
 	server.sendToClient(client.getFd(), RPL_WELCOME(client.getNickname(), client.getUsername()));
 	server.sendToClient(client.getFd(), RPL_YOURHOST(client.getNickname()));

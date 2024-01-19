@@ -12,7 +12,7 @@ void	join(Server & server, Client & client, std::vector<std::string> & commands)
 void	pass(Server & server, Client & client, std::vector<std::string> & commands);
 void	nick(Server & server, Client & client, std::vector<std::string> & commands);
 void	user(Server & server, Client & client, std::vector<std::string> & commands);
-
+void	privmsg(Server & server, Client & client, std::vector<std::string> & commands);
 
 
 
@@ -21,6 +21,7 @@ void	user(Server & server, Client & client, std::vector<std::string> & commands)
 
 
 std::vector<std::string> split(std::string & str, char delim);
+std::vector<std::string> splitPrivMsg(std::string & str, char delim);
 bool	isAlreadyUsed(std::string const & str, std::string const & str2);
 
 

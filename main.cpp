@@ -9,7 +9,7 @@ int main(int argc, char **argv)
 		std::cout << "Usage: ./ircserv <port> <password>" << std::endl;
 		return (1);
 	}
-
+	signal(SIGINT, Server::mySigIntHandler);
 	try
 	{
 		Server a(argv[1], argv[2]);

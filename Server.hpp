@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <map>
 #include <vector>
+#include <signal.h>
 
 #include "NumericReplies.hpp"
 
@@ -20,6 +21,7 @@
 #define USERLEN 20
 #define USERMODE "jspUSERMODE"
 #define CHANMODE "jspCHANMODE"
+#define CHANLIMIT 5
 
 class Client;
 
@@ -30,6 +32,7 @@ class Server
 	typedef void (*fct)(Server &, Client &, std::vector<std::string> &);
 
 	private:
+
 
 		std::map<std::string, fct> 	commands;
 
@@ -59,10 +62,14 @@ class Server
 		void disconnectClient(Client & client);
 		std::string getPassword();
 		void sendToClient(int fd, std::string const & message);
+		void sendToAllClients(std::string const & message);
 		std::string getCreationDate();
 
 		it_clients getClientsMapEnd();
 		it_clients getClientsMapBegin();
+
+		static void mySigIntHandler(int s);
+		static bool 				running;
 		
 };
 
