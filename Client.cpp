@@ -2,7 +2,7 @@
 
 Client::Client() {};
 
-Client::Client(int fd): hasPassword(false), hasSetNickname(false), isRegistered(false), nickname("NO_NICK"), iPoll(0)
+Client::Client(int fd): hasPassword(false), hasSetNickname(false), isRegistered(false), botEnabled(true), nickname("NO_NICK"), iPoll(0), bot_points(0)
 {
 	this->my_fd = fd;
 	this->nickname = "Anonymous";
@@ -121,4 +121,24 @@ it_channels Client::getChannelsBegin()
 it_channels Client::getChannelsEnd()
 {
 	return (this->channels.end());
+}
+
+void Client::addBotPoints(int points)
+{
+	this->bot_points += points;
+}
+
+int Client::getBotPoints()
+{
+	return (this->bot_points);
+}
+
+void Client::setBotEnabled(bool botEnabled)
+{
+	this->botEnabled = botEnabled;
+}
+
+bool Client::getBotEnabled()
+{
+	return (this->botEnabled);
 }

@@ -66,6 +66,7 @@ void	newClientInChannel(Server & server, Client & client, Channel & channel)
 
 	channel.addClient(client.getFd(), &client);
 	client.addChannel(channel.getName(), &channel);
+	server.sendToAllClientsInChannel(channel.getName(), JOIN(client.getNickname(), client.getUsername(), channel.getName()));
 	(void)server;
 	// server.sendToClient(client.getFd(), "coucou bienvenu dans le channel " + channel.getName() + "\r\n");
 	// server.sendToClient(client.getFd(), RPL_TOPIC(client.getNickname(), commands[1], it->second->getTopic()));

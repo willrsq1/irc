@@ -6,18 +6,19 @@
 
 //x
 
-#define RPL_NEWNICKNAME(client, username, new_nickname) ((std::string)":" + SRC_CLI(client, username) + " changed her nickname to " + new_nickname + "\r\n")
+#define RPL_NEWNICKNAME(client, username, new_nickname) ((std::string)":" + SRC_CLI(client, username) + " NICK " + new_nickname + "\r\n")
 
 //x
 
 #define ERR_FATALERROR(msg) ((std::string)"ERROR : Fatal error: " + msg + "\r\n")
 
-#define SRC_CLI(client, username) (client + "!" + username + "@" + HOST)
+#define SRC_CLI(client, username) ((std::string)client + "!" + username + "@" + HOST)
 
 #define PRIVMSG(client, username, target, message) ((std::string)":" + SRC_CLI(client, username) + " PRIVMSG " + target + " :" + message + "\r\n")
 
+#define JOIN(client, username, channel) ((std::string)":" + SRC_CLI(client, username) + " JOIN " + channel + "\r\n")
 
-#define PART(client, username, target, reason) ((std::string)":" + SRC_CLI(client, username) + " is leaving the channel " + target + " for the reason: " + reason + "\r\n")
+#define PART(client, username, target, reason) ((std::string)":" + SRC_CLI(client, username) + " PART " + target + " is leaving the channel " + target + " for the reason: " + reason + "\r\n")
 
 
 

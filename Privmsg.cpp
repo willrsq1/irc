@@ -47,6 +47,12 @@ static void	sendmsg(Server & server, Client & client, std::vector<std::string> &
 		return ;
 	}
 
+	if (target == BOT_NAME) // if the target is the bot
+	{
+		server.sendAnswerToBot(client.getFd(), commands[2]);
+		return ;
+	}
+
 	if (target[0] == '$' && target.substr(1) == (std::string)SERVER) // if the target is the Server
 	{
 		server.sendToAllClients(PRIVMSG(client.getNickname(), client.getUsername(), target, commands[2]));
@@ -61,7 +67,7 @@ static void	sendmsg(Server & server, Client & client, std::vector<std::string> &
 				//gestion d'erreur a faire (ban, kick, etc)
 				if (it->second->isClientInChannel(client.getFd()))
 				{
-					server.sendToAllClientsInChannel(it->second->getName(), PRIVMSG(client.getNickname(), client.getUsername(), target, commands[2]));
+					server.sendToAllClientsInChannelExceptOne(client.getFd(), it->second->getName(), PRIVMSG(client.getNickname(), client.getUsername(), target, commands[2]));
 					return ;
 				}
 				else

@@ -19,6 +19,7 @@ class Client
 		bool 			hasPassword;
 		bool			hasSetNickname;
 		bool 			isRegistered;
+		bool			botEnabled;
 		std::string		nickname;
 		std::string		username;
 		std::string		realname;
@@ -26,6 +27,8 @@ class Client
 		int				my_fd;
 
 		std::string		socketBuff;
+
+		int				bot_points;
 		Client();
 
 	public:
@@ -56,6 +59,11 @@ class Client
 		void	removeChannel(std::string const & channelName);
 		it_channels getChannelsBegin();
 		it_channels getChannelsEnd();
+
+		void	addBotPoints(int);
+		int 	getBotPoints();
+		void	setBotEnabled(bool);
+		bool	getBotEnabled();
 };
 
 #include "Channel.hpp"

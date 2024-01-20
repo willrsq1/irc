@@ -40,6 +40,7 @@ class Channel
 
 		bool isClientInChannel(int fd);
 		void sendToAllClients(std::string const & message);
+		void sendToAllClientsExceptOne(int fd, std::string const & message);
 		void addClient(int fd, Client * client);
 		void removeClient(int fd);
 };

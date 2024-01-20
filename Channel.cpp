@@ -42,6 +42,18 @@ void Channel::sendToAllClients(std::string const & message)
 	}
 }
 
+void Channel::sendToAllClientsExceptOne(int fd, std::string const & message)
+{
+	for (it_clients it = this->clients.begin(); it != this->clients.end(); it++)
+	{
+		
+		if (fd == (*it).second->getFd())
+			continue ;
+		server->sendToClient((*it).second->getFd(), message);
+
+	}
+}
+
 void Channel::addOperator(std::string const & nickname)
 {
 	this->operators.push_back(nickname);

@@ -21,6 +21,12 @@ void	nick(Server & server, Client & client, std::vector<std::string> & commands)
 		return ;
 	}
 
+	if (caseInsensitiveCheck(commands[1], BOT_NAME) == true) // nickname already used by bot
+	{
+		server.sendToClient(client.getFd(), ERR_NICKNAMEINUSE(client.getNickname(), commands[1]));
+		return ;
+	}
+
 	for (it_clients it = server.getClientsBegin() ; it != server.getClientsEnd() ; it++) //checks if nickname already used
 	{
 
@@ -32,16 +38,7 @@ void	nick(Server & server, Client & client, std::vector<std::string> & commands)
 		
 	}
 
-	for (it_clients it = server.getClientsBegin() ; it != server.getClientsEnd() ; it++) //sends to everyone the new nickname
-	{
-
-		if (it->second->getFd() != client.getFd())
-		{
-			server.sendToClient(it->second->getFd(), RPL_NEWNICKNAME(client.getNickname(), client.getUsername(), commands[1]));
-		}
-
-	}
-
+	server.sendToAllClients(RPL_NEWNICKNAME(client.getNickname(), client.getUsername(), commands[1]));  //sends to everyone the new nickname
 	client.setNickname(commands[1]);
 	client.setHasSetNickname(true); //client has set his nickname, he can now use USER command
 

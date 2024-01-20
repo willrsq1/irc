@@ -18,13 +18,17 @@
 #define BUFFER_SIZE 4096
 #define HOST "localhost"
 #define SERVER "ARBESA_SERVER"
+#define BOT_NAME "BOT"
 #define USERLEN 20
 #define USERMODE "jspUSERMODE"
 #define CHANMODE "jspCHANMODE"
 #define CHANLIMIT 5
 
+
 class Client;
 class Channel;
+
+#include "Bot.hpp"
 
 
 typedef	typename std::map<int, Client *>::iterator 	it_clients;
@@ -35,6 +39,8 @@ class Server
 	typedef void (*fct)(Server &, Client &, std::vector<std::string> &);
 
 	private:
+
+		Bot  					bot;
 
 		bool 					shutting_down;
 
@@ -69,6 +75,7 @@ class Server
 		void sendToClient(int fd, std::string const & message);
 		void sendToAllClients(std::string const & message);
 		void sendToAllClientsInChannel(std::string const & channelName, std::string const & message);
+		void sendToAllClientsInChannelExceptOne(int fd, std::string const & channelName, std::string const & message);
 		std::string getCreationDate();
 
 		it_clients  getClientsBegin();
@@ -84,6 +91,14 @@ class Server
 
 		static void mySigIntHandler(int s);
 		static bool 				running;
+
+
+		//BOT
+
+		void	sendAnswerToBot(int fd, std::string const & message);
+		bool    noRegisteredClients();
+		Client * getClientFromFd(int fd);
+		void 	sendToAllClientsFromBot(std::string const & message);
 		
 };
 

@@ -22,6 +22,7 @@ Server::Server(std::string const & port, std::string const & password):shutting_
 	registerDateCreation();
 	registerCommand();
 	createMySocket(port_nb);
+	bot.setServer(this);
 	loop();
 }
 
@@ -94,6 +95,7 @@ void	Server::loop()
 {
 	while (running == true)
 	{
+		bot.update();
 		int ret = poll(pollfds, nbSockets, 1000);
 		if (ret == -1)
 		{
@@ -298,7 +300,17 @@ void Server::sendToAllClients(std::string const & message)
 {
 	for (it_clients it = clients.begin(); it != clients.end(); it++)
 	{
-		sendToClient(it->second->getFd(), message);
+		if (it->second->getIsRegistered() == true)
+			sendToClient(it->second->getFd(), message);
+	}
+}
+
+void Server::sendToAllClientsFromBot(std::string const & message)
+{
+	for (it_clients it = clients.begin(); it != clients.end(); it++)
+	{
+		if (it->second->getIsRegistered() == true && it->second->getBotEnabled() == true)
+			sendToClient(it->second->getFd(), message);
 	}
 }
 
@@ -309,6 +321,18 @@ void Server::sendToAllClientsInChannel(std::string const & channelName, std::str
 		if (it->first == channelName)
 		{
 			it->second->sendToAllClients(message);
+			return ;
+		}
+	}
+}
+
+void Server::sendToAllClientsInChannelExceptOne(int fd, std::string const & channelName, std::string const & message)
+{
+	for (it_channels it = channels.begin(); it != channels.end(); it++)
+	{
+		if (it->first == channelName )
+		{
+			it->second->sendToAllClientsExceptOne(fd, message);
 			return ;
 		}
 	}
@@ -329,4 +353,24 @@ void Server::removeClientFromChannel(std::string const & channelName, int fd)
 {
 	clients[fd]->removeChannel(channelName);
 	channels[channelName]->removeClient(fd);
+}
+
+void Server::sendAnswerToBot(int fd, std::string const & message)
+{
+	bot.receiveAnswer(fd, message);
+}
+
+bool Server::noRegisteredClients()
+{
+	for (it_clients it = clients.begin(); it != clients.end(); it++)
+	{
+		if (it->second->getIsRegistered() == true)
+			return false;
+	}
+	return true;
+}
+
+Client * Server::getClientFromFd(int fd)
+{
+	return clients[fd];
 }
