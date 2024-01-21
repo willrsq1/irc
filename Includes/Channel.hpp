@@ -8,7 +8,7 @@
 class Client;
 class Server;
 
-typedef	typename std::map<int, Client *>::iterator 	it_clients;
+typedef	std::map<int, Client *>::iterator 	it_clients;
 
 class Channel
 {

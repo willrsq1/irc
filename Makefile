@@ -36,7 +36,7 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	$(CC) $(FLAGS) -o $@ $^
 
-%.o: %.cpp *.hpp */*.hpp
+%.o: %.cpp %.hpp %/%.hpp
 	$(CC) $(FLAGS) -c -o $@ $<
 	
 clean:

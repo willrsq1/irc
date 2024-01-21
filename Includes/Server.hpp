@@ -31,8 +31,8 @@ class Channel;
 #include "Bot.hpp"
 
 
-typedef	typename std::map<int, Client *>::iterator 	it_clients;
-typedef	typename std::map<std::string, Channel *>::iterator it_channels;
+typedef std::map<int, Client *>::iterator 	it_clients;
+typedef std::map<std::string, Channel *>::iterator it_channels;
 
 class Server
 {
