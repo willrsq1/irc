@@ -16,6 +16,45 @@ Bot::Bot(): nbWinners(0), questionNb(0), questionsTotalNb(4)
 
 	questions[3] = "Where is the Moon ?";
 	answers[3] = "Space";
+
+	questions[4] = "Which animal is the fastest ?";
+	answers[4] = "Cheetah";
+
+	questions[5] = "What is the name of the main character in the movie 'The Matrix' ?";
+	answers[5] = "Neo";
+
+	questions[6] = "What is the name of the main character in the movie 'The Lord of the Rings' ?";
+	answers[6] = "Frodo";
+
+	questions[7] = "Who is the author of the book 'The Lord of the Rings' ?";
+	answers[7] = "J.R.R. Tolkien";
+
+	questions[8] = "How much is 2 + 2 ?";
+	answers[8] = "4";
+
+	questions[9] = "How much is 12 * 12 ?";
+	answers[9] = "144";
+
+	questions[10] = "How slow is a snail ?";
+	answers[10] = "Very slow";
+
+	questions[11] = "How many legs does a spider have ?";
+	answers[11] = "8";
+
+	questions[12] = "How far is the Sun from the Earth ?";
+	answers[12] = "149.6 million km";
+
+	questions[13] = "How many planets are there in the Solar System ?";
+	answers[13] = "8";
+
+	questions[14] = "What is the name of the main character in the movie 'The Lion King' ?";
+	answers[14] = "Simba";
+
+	questions[15] = "What is the name of the main character in the movie 'The Little Mermaid' ?";
+	answers[15] = "Ariel";
+
+	questions[16] = "Mickey Mouse is a ... ?";
+	answers[16] = "Mouse";
 }
 
 Bot::~Bot()

@@ -81,7 +81,10 @@ void Server::createMySocket(int port)
 
 	int yes = 1;
 	if (setsockopt(serverSocketFd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
+	{
+		close (serverSocketFd);
 		throw std::runtime_error("Error: setsockopt(SO_REUSEADDR) failed");
+	}
 	
 	sockaddr_in serverAddress;
 	serverAddress.sin_family = AF_INET;
@@ -89,10 +92,16 @@ void Server::createMySocket(int port)
 	serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 	if (bind(serverSocketFd, (sockaddr *)&serverAddress, sizeof(serverAddress)) == -1)
+	{
+		close (serverSocketFd);
 		throw std::runtime_error("Error: bind failed");
+	}
 
 	if (listen(serverSocketFd, SOMAXCONN) == -1)
+	{
+		close (serverSocketFd);
 		throw std::runtime_error("Error: listen failed");
+	}
 
 	pollfds[nbSockets].fd = serverSocketFd;
 	pollfds[nbSockets].events = POLLIN;

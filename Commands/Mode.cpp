@@ -2,20 +2,12 @@
 
 void	ChecksForChannel(Server & server, Client & client, std::vector<std::string> & commands);
 void	modeForChannel(Server & server, Client & client, std::vector<std::string> & commands, Channel * channel);
-void	modeForUser(Server & server, Client & client, std::vector<std::string> & commands);
-void	modeWithoutModes(Server & server, Client & client, std::vector<std::string> & commands);
 
 void	mode(Server & server, Client & client, std::vector<std::string> & commands)
 {
 	if (commands.size() < 2 || commands[1].empty()) // no parameters
 	{
 		server.sendToClient(client.getFd(), ERR_NEEDMOREPARAMS(client.getNickname(), "MODE"));
-		return ;
-	}
-
-	if (commands.size() == 2)
-	{
-		modeWithoutModes(server, client, commands);
 		return ;
 	}
 
@@ -159,19 +151,4 @@ void	modeForChannel(Server & server, Client & client, std::vector<std::string> &
 			return ;
 		}
 	}
-}
-
-
-void	modeForUser(Server & server, Client & client, std::vector<std::string> & commands)
-{
-	(void)server;
-	(void)client;
-	(void)commands;
-}
-
-void	modeWithoutModes(Server & server, Client & client, std::vector<std::string> & commands)
-{
-	(void)server;
-	(void)client;
-	(void)commands;
 }
