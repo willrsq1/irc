@@ -17,19 +17,18 @@ Server::Server(std::string const & port, std::string const & password):shutting_
 
 	if (token.fail() || portNumber < 1 || portNumber > 65535)
 	{
-		std::cout << std::strerror(errno) << std::endl;
 		throw std::invalid_argument("Error: Wrong port format");
 	}
 	if (password.empty())
 	{
 		throw std::invalid_argument("Error: Password cannot be empty");
 	}
-	
-	this->_password = password;
+
+	this->password = password;
 	
 	registerDateCreation();
 	registerCommand();
-	createMySocket(port_nb);
+	createMySocket(portNumber);
 	bot.setServer(this);
 	loop();
 }
