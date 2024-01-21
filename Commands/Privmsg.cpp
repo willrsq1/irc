@@ -72,7 +72,7 @@ static void	sendmsg(Server & server, Client & client, std::vector<std::string> &
 				}
 				if (it->second->isClientInChannel(client.getFd()))
 				{
-					server.sendToAllClientsInChannelExceptOne(client.getFd(), it->second->getName(), PRIVMSG(client.getNickname(), client.getUsername(), target, commands[2]));
+					server.sendToAllClientsInChannelExceptOne(client.getFd(), it->second->getName(), PRIVMSG((std::string)(it->second->isOperator(client.getFd()) ? "@" : "") + client.getNickname(), client.getUsername(), target, commands[2]));
 					return ;
 				}
 				else

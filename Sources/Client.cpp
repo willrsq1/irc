@@ -142,3 +142,13 @@ bool Client::getBotEnabled()
 {
 	return (this->botEnabled);
 }
+
+int Client::getNbChannels()
+{
+	return (this->channels.size());
+}
+
+void Client::leaveAllChannels()
+{
+	this->channels.clear();
+}

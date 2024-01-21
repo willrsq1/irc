@@ -39,7 +39,7 @@ void	clientPartingFromChannel(Server & server, Client & client, std::vector<std:
 		{
 			if (it->second->isClientInChannel(client.getFd())) //if client in channel, execute the PART command
 			{
-				server.sendToAllClientsInChannel(it->first, PART(client.getNickname(), client.getRealname(), commands[1], ((commands.size() == 3) ? commands[2] : " "))); //warn everyone in chan
+				server.sendToAllClientsInChannel(it->first, PART(client.getNickname(), client.getUsername(), commands[1], ((commands.size() == 3) ? commands[2] : "empty"))); //warn everyone in chan
 				server.removeClientFromChannel(it->first, client.getFd()); //remove client from channel and channel from client -- deletes the channel if its empty, changes the operator if the operator left
 				return ;
 			}

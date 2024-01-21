@@ -12,6 +12,7 @@
 #include <map>
 #include <vector>
 #include <signal.h>
+#include <ctime>
 
 #include "NumericReplies.hpp"
 
@@ -20,9 +21,11 @@
 #define SERVER "$ARBESA_SERVER"
 #define BOT_NAME "BOT"
 #define USERLEN 20
-#define USERMODE "jspUSERMODE"
-#define CHANMODE "jspCHANMODE"
-#define CHANLIMIT 5
+#define NICKLEN 20
+#define USERMODE "usermodes:''"
+#define CHANMODE "chanmodes:'it'"
+#define CHANMODES_WITH_PARAMS "chanmodes_with_params:'klo'"
+#define CHANLIMIT 10
 
 
 class Client;
@@ -53,6 +56,7 @@ class Server
 		pollfd 				pollfds[SOMAXCONN];
 		std::string 		password;
 		int					nbSockets;
+		int					maxClients;
 
 		std::string 		creationDate;
 
@@ -91,6 +95,11 @@ class Server
 
 		static void mySigIntHandler(int s);
 		static bool 				running;
+
+		std::string getNbClients();
+		std::string getNbClientsUnregistered();
+		std::string getNbChannels();
+		std::string getMaxClients();
 
 
 		//BOT

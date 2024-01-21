@@ -56,4 +56,21 @@ void	user(Server & server, Client & client, std::vector<std::string> & commands)
 	server.sendToClient(client.getFd(), RPL_MYINFO(client.getNickname()));
 	server.sendToClient(client.getFd(), RPL_ISUPPORT(client.getNickname()));
 
+	//LUSERS
+
+	server.sendToClient(client.getFd(), RPL_LUSERCLIENT(client.getNickname(), server.getNbClients()));
+	server.sendToClient(client.getFd(), RPL_LUSEROP(client.getNickname()));
+	server.sendToClient(client.getFd(), RPL_LUSERUNKNOWN(client.getNickname(), server.getNbClientsUnregistered()));
+	server.sendToClient(client.getFd(), RPL_LUSERCHANNELS(client.getNickname(), server.getNbChannels()));
+	server.sendToClient(client.getFd(), RPL_LUSERME(client.getNickname(), server.getNbClients()));
+	server.sendToClient(client.getFd(), RPL_LOCALUSERS(client.getNickname(), server.getNbClients(), server.getMaxClients()));
+	server.sendToClient(client.getFd(), RPL_GLOBALUSERS(client.getNickname(), server.getNbClients(), server.getMaxClients()));
+
+	//MOTD
+	
+	server.sendToClient(client.getFd(), RPL_MOTDSTART(client.getNickname()));
+	server.sendToClient(client.getFd(), RPL_MOTD(client.getNickname(), "Welcome to the our IRC serv. Will you be the first to reach 100 points ? -"));
+	server.sendToClient(client.getFd(), RPL_MOTD(client.getNickname(), "Good luck ! -"));
+	server.sendToClient(client.getFd(), RPL_ENDOFMOTD(client.getNickname()));
+
 }

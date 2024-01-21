@@ -27,6 +27,14 @@ void	nick(Server & server, Client & client, std::vector<std::string> & commands)
 		return ;
 	}
 
+	
+	if (commands[1].size() > NICKLEN) // username too long
+	{
+		commands[1].resize(NICKLEN);
+		server.sendToClient(client.getFd(), ERR_FATALERROR("Your nickname was resized to: " + commands[1]));
+	}
+
+
 	for (it_clients it = server.getClientsBegin() ; it != server.getClientsEnd() ; it++) //checks if nickname already used
 	{
 

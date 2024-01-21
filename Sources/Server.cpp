@@ -4,18 +4,28 @@ Server::Server(){}
 
 bool Server::running = true;
 
-Server::Server(std::string const & port, std::string const & password):shutting_down(false), password(password), nbSockets(0)
+Server::Server(std::string const & port, std::string const & password):shutting_down(false), password(password), nbSockets(0), maxClients(0)
 {
-	for (size_t i = 0; i < port.size(); i++)
+	if (port.empty() || port.find_first_not_of("0123456789") != std::string::npos)
 	{
-		if (port[i] < '0' || port[i] > '9')
-			throw std::runtime_error("Error: port must be a number");
+		throw std::invalid_argument("Error: Wrong port format");
 	}
 
-	int port_nb = atoi(port.c_str());
+	std::istringstream token(port);
+	int portNumber;
+	token >> portNumber;
 
-	if (port_nb != 6667)
-		throw std::runtime_error("Error: port must be 6667 for TCP connections");
+	if (token.fail() || portNumber < 1 || portNumber > 65535)
+	{
+		std::cout << std::strerror(errno) << std::endl;
+		throw std::invalid_argument("Error: Wrong port format");
+	}
+	if (password.empty())
+	{
+		throw std::invalid_argument("Error: Password cannot be empty");
+	}
+	
+	this->_password = password;
 	
 	registerDateCreation();
 	registerCommand();
@@ -37,13 +47,10 @@ void	Server::registerCommand()
 	commands["LIST"] = &list;
 	commands["PING"] = &ping;
 	commands["QUIT"] = &quit;
+	commands["INVITE"] = &invite;
+	commands["TOPIC"] = &topic;
+	commands["LUSERS"] = &lusers;
 	commands["MODE"] = &mode;
-	// functions["/join"] = &join;
-	// functions["/leave"] = &leave;
-	// functions["/msg"] = &msg;
-	// functions["/accept_file"] = &accept_file;
-	// functions["/send_file"] = &send_file;
-	// functions["/quit"] = &quit;
 }
 
 Server::~Server()
@@ -80,7 +87,7 @@ void Server::createMySocket(int port)
 	sockaddr_in serverAddress;
 	serverAddress.sin_family = AF_INET;
 	serverAddress.sin_port = htons(port);
-	serverAddress.sin_addr.s_addr = inet_addr("0.0.0.0");
+	serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
 
 	if (bind(serverSocketFd, (sockaddr *)&serverAddress, sizeof(serverAddress)) == -1)
 		throw std::runtime_error("Error: bind failed");
@@ -150,6 +157,8 @@ void	Server::newClient()
 	clients[clientSocketFd]->setiPoll(nbSockets);
 	std::cout << "New client connected :" << clients[clientSocketFd]->getNickname() << std::endl;
 	nbSockets++;
+	if (nbSockets - 1 > maxClients)
+		maxClients = nbSockets;
 }
 
 
@@ -397,4 +406,30 @@ Client * Server::getClientFromNickname(std::string const & nickname)
 			return it->second;
 	}
 	return NULL;
+}
+
+std::string Server::getNbClients()
+{
+	return intToString(clients.size());
+}
+
+std::string Server::getNbClientsUnregistered()
+{
+	int nb = 0;
+	for (it_clients it = clients.begin(); it != clients.end(); it++)
+	{
+		if (it->second->getIsRegistered() == false)
+			nb++;
+	}
+	return intToString(nb);
+}
+
+std::string Server::getNbChannels()
+{
+	return intToString(channels.size());
+}
+
+std::string Server::getMaxClients()
+{
+	return intToString(maxClients);
 }

@@ -1,6 +1,6 @@
 #include "../Includes/Channel.hpp"
 
-Channel::Channel(std::string name, Server * server): name(name), topic("No topic set"), server(server), mode(""), limit(false), limitValue(0)
+Channel::Channel(std::string name, Server * server): name(name), topic(""), server(server), mode("t"), limit(false), limitValue(0), inviteOnly(false), topicProtected(true), topicEditor(""), topicDate(""), hasKey(false), key("")
 {
 
 }
@@ -18,8 +18,16 @@ void Channel::addClient(int fd, Client * client)
 		return ;
 	}
 	clients[fd] = client;
+	if (isClientInvited(fd))
+	{
+		removeInvitedUser(fd);
+	}
 	if (operators.size() == 0)
+	{
 		setNewOperator(fd);
+		server->sendToAllClientsInChannel(this->name, MODE(SERVER, SERVER, this->name, "+o " + this->clients.begin()->second->getNickname()));
+
+	}
 }
 
 bool Channel::isClientInChannel(int fd)
@@ -61,11 +69,6 @@ void Channel::sendToAllClientsExceptOne(int fd, std::string const & message)
 	}
 }
 
-void Channel::addOperator(int fd)
-{
-	this->operators.push_back(fd);
-}
-
 void Channel::removeOperator(int fd)
 {
 	for (std::vector<int>::iterator it = this->operators.begin(); it != this->operators.end(); it++)
@@ -100,6 +103,8 @@ void Channel::removeClient(int fd)
 		{
 			if (this->isOperator(fd))
 				this->operators.erase(std::find(this->operators.begin(), this->operators.end(), fd));
+			if (this->isClientInvited(fd))
+				this->invitedUsers.erase(std::find(this->invitedUsers.begin(), this->invitedUsers.end(), fd));
 			this->clients.erase(it);
 			break ;
 		}
@@ -116,14 +121,14 @@ void Channel::removeClient(int fd)
 	if (this->operators.size() == 0)
 	{
 		this->setNewOperator(this->clients.begin()->second->getFd());
+		server->sendToAllClientsInChannel(this->name, MODE(SERVER, SERVER, this->name, "+o " + this->clients.begin()->second->getNickname()));
+
 	}
 }
 
 void Channel::setNewOperator(int fd)
 {
 	this->operators.push_back(fd);
-	server->sendToClient(fd, "you are now operator of this channel\r\n");
-	// server->sendToClient(this->clients.begin()->second->getFd(), MODE(this->clients.begin()->second->getNickname(), this->name, "+o", nickname));
 }
 
 void Channel::addBannedUser(int fd)
@@ -214,4 +219,113 @@ bool Channel::limitIsReached()
 void Channel::setLimit(bool limit)
 {
 	this->limit = limit;
+}
+
+int Channel::getNbOperators()
+{
+	return (this->operators.size());
+}
+
+void Channel::addInvitedUser(int fd)
+{
+	this->invitedUsers.push_back(fd);
+}
+
+void Channel::removeInvitedUser(int fd)
+{
+	for (std::vector<int>::iterator it = invitedUsers.begin(); it != invitedUsers.end(); it++)
+	{
+		if (*it == fd)
+		{
+			invitedUsers.erase(it);
+			return ;
+		}
+	}
+}
+
+bool Channel::isClientInvited(int fd)
+{
+	for (std::vector<int>::iterator it = invitedUsers.begin(); it != invitedUsers.end(); it++)
+	{
+		if (*it == fd)
+			return (true);
+	}
+	return (false);
+}
+
+void Channel::clearInvitedUsers()
+{
+	this->invitedUsers.clear();
+}
+
+void Channel::setInviteOnly(bool inviteOnly)
+{
+	this->inviteOnly = inviteOnly;
+}
+
+bool Channel::isInviteOnly()
+{
+	return (this->inviteOnly);
+}
+
+bool Channel::isTopicProtected()
+{
+	return (this->topicProtected);
+}
+
+void Channel::setTopicProtected(bool topicProtected)
+{
+	this->topicProtected = topicProtected;
+}
+
+void Channel::setTopic(std::string const & topic, std::string const & nickname)
+{
+	topicEditor = nickname;
+	this->topic = topic;
+
+	std::time_t timestamp = std::time(NULL);
+	topicDate = intToString(timestamp);
+}
+
+std::string & Channel::getTopicEditor()
+{
+	return (this->topicEditor);
+}
+
+std::string & Channel::getTopicDate()
+{
+	std::cout << "topicDate: " << topicDate << std::endl;
+	return (this->topicDate);
+}
+
+void Channel::setKey(std::string const & key)
+{
+	this->key = key;
+	this->hasKey = true;
+}
+
+bool Channel::hasAKey()
+{
+	return (this->hasKey);
+}
+
+std::string & Channel::getKey()
+{
+	return (this->key);
+}
+
+void Channel::clearKey()
+{
+	this->hasKey = false;
+	this->key = "";
+}
+
+it_clients Channel::getClientsBegin()
+{
+	return (this->clients.begin());
+}
+
+it_clients Channel::getClientsEnd()
+{
+	return (this->clients.end());
 }

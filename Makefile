@@ -31,8 +31,15 @@ SOURCES =	Sources/main.cpp \
 			Commands/List.cpp \
 			Commands/Ping.cpp \
 			Commands/Quit.cpp \
+			Commands/Invite.cpp \
+			Commands/Topic.cpp \
+			Commands/Lusers.cpp \
 			Commands/Mode.cpp \
 			Commands/Mode_L.cpp \
+			Commands/Mode_O.cpp \
+			Commands/Mode_I.cpp \
+			Commands/Mode_T.cpp \
+			Commands/Mode_K.cpp \
 			Sources/Bot.cpp \
 			
 SRCS 	= $(addprefix $(SRC_PATH)/,$(SOURCES))

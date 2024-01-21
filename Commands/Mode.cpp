@@ -32,7 +32,7 @@ void	mode(Server & server, Client & client, std::vector<std::string> & commands)
 	}
 	else
 	{
-		modeForUser(server, client, commands);
+		server.sendToClient(client.getFd(), ERR_NOSUCHCHANNEL(client.getNickname(), commands[1]));
 		return ;
 	}
 
@@ -80,20 +80,6 @@ void	ChecksForChannel(Server & server, Client & client, std::vector<std::string>
 		return ;
 	}
 
-	//check that all the other caracters are a-z A-Z
-
-	for (size_t i = 1; i < commands[2].size(); i++)
-	{
-		if (commands[2][i] < 'a' || commands[2][i] > 'z')
-		{
-			if (commands[2][i] < 'A' || commands[2][i] > 'Z')
-			{
-				server.sendToClient(client.getFd(), ERR_FATALERROR("Invalid mode string, you must only use a-z A-Z"));
-				return ;
-			}
-		}
-	}
-
 	if (commands[2].size() != 2)
 	{
 		server.sendToClient(client.getFd(), ERR_FATALERROR("Invalid mode string, you must specify only one mode (+X or -X)"));
@@ -120,6 +106,26 @@ void	modeForChannel(Server & server, Client & client, std::vector<std::string> &
 			ModeLPlus(server, client, commands, channel);
 			return ;
 		}
+		else if (commands[2][1] == 'o')
+		{
+			ModeOPlus(server, client, commands, channel);
+			return ;
+		}
+		else if (commands[2][1] == 'k')
+		{
+			ModeKPlus(server, client, commands, channel);
+			return ;
+		}
+		else if (commands[2][1] == 't')
+		{
+			ModeTPlus(server, client, commands, channel);
+			return ;
+		}
+		else if (commands[2][1] == 'i')
+		{
+			ModeIPlus(server, client, commands, channel);
+			return ;
+		}
 	}
 
 
@@ -130,6 +136,26 @@ void	modeForChannel(Server & server, Client & client, std::vector<std::string> &
 		if (commands[2][1] == 'l')
 		{
 			ModeLMinus(server, client, commands, channel);
+			return ;
+		}
+		else if (commands[2][1] == 'o')
+		{
+			ModeOMinus(server, client, commands, channel);
+			return ;
+		}
+		else if (commands[2][1] == 'k')
+		{
+			ModeKMinus(server, client, commands, channel);
+			return ;
+		}
+		else if (commands[2][1] == 't')
+		{
+			ModeTMinus(server, client, commands, channel);
+			return ;
+		}
+		else if (commands[2][1] == 'i')
+		{
+			ModeIMinus(server, client, commands, channel);
 			return ;
 		}
 	}

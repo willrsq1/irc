@@ -64,6 +64,9 @@ class Client
 		int 	getBotPoints();
 		void	setBotEnabled(bool);
 		bool	getBotEnabled();
+		int	getNbChannels();
+
+		void	leaveAllChannels();
 };
 
 #include "Channel.hpp"
