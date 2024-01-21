@@ -5,8 +5,7 @@
 #include <sstream>
 #include <algorithm>
 
-#include "Server.hpp"
-#include "Client.hpp"
+#include "../Includes/Server.hpp"
 
 void	join(Server & server, Client & client, std::vector<std::string> & commands);
 void	pass(Server & server, Client & client, std::vector<std::string> & commands);

@@ -1,6 +1,4 @@
-#include "Server.hpp"
-
-//je code en c++98
+#include "../Includes/Server.hpp"
 
 Server::Server(){}
 

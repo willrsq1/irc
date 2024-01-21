@@ -9,23 +9,23 @@ NAME    = ircserv
 
 ### SOURCE FILES ###
 
-SOURCES =	main.cpp \
-			Server.cpp \
-			Client.cpp \
-			Channel.cpp \
-			Utils.cpp \
-			Join.cpp \
-			Pass.cpp \
-			Nick.cpp \
-			User.cpp \
-			Privmsg.cpp \
-			Part.cpp \
-			Kick.cpp \
-			Motd.cpp \
-			List.cpp \
-			Ping.cpp \
-			Quit.cpp \
-			Bot.cpp \
+SOURCES =	Sources/main.cpp \
+			Sources/Server.cpp \
+			Sources/Client.cpp \
+			Sources/Channel.cpp \
+			Commands/Utils.cpp \
+			Commands/Join.cpp \
+			Commands/Pass.cpp \
+			Commands/Nick.cpp \
+			Commands/User.cpp \
+			Commands/Privmsg.cpp \
+			Commands/Part.cpp \
+			Commands/Kick.cpp \
+			Commands/Motd.cpp \
+			Commands/List.cpp \
+			Commands/Ping.cpp \
+			Commands/Quit.cpp \
+			Sources/Bot.cpp \
 			
 OBJS    = $(SOURCES:.cpp=.o)
 
@@ -36,7 +36,7 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	$(CC) $(FLAGS) -o $@ $^
 
-%.o: %.cpp *.hpp
+%.o: %.cpp *.hpp */*.hpp
 	$(CC) $(FLAGS) -c -o $@ $<
 	
 clean:

@@ -1,4 +1,4 @@
-#include "Bot.hpp"
+#include "../Includes/Bot.hpp"
 
 Bot::Bot(): nbWinners(0), questionNb(0), questionsTotalNb(4)
 {

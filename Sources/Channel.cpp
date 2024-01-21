@@ -1,4 +1,4 @@
-#include "Channel.hpp"
+#include "../Includes/Channel.hpp"
 
 Channel::Channel(std::string name, Server * server): name(name), topic("No topic set"), server(server)
 {
