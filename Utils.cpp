@@ -52,3 +52,10 @@ bool	caseInsensitiveCheck(std::string const & str, std::string const & str2)
 		return (true);
 	return (false);
 }
+
+std::string intToString(int nb)
+{
+	std::ostringstream oss;
+	oss << nb;
+	return (oss.str());
+}

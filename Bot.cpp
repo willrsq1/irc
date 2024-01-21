@@ -62,7 +62,7 @@ void	Bot::update()
 	}
 	else if (mode == 2)
 	{
-		server->sendToAllClientsFromBot(PRIVMSG(BOT_NAME, BOT_NAME, SERVER, "Only 30 seconds remaining to answer the question... Hurry up !"));
+		server->sendToAllClientsFromBot(PRIVMSG(BOT_NAME, BOT_NAME, SERVER, "Only 30 seconds remaining to answer the question..."));
 		mode++;
 		return ;
 	}
@@ -120,9 +120,7 @@ void	Bot::receiveAnswer(int fd, std::string const & answer)
 
 	if (answer == "MY_POINTS")
 	{
-		std::ostringstream oss;
-		oss << client->getBotPoints();
-		std::string result = oss.str();
+		std::string result = intToString(client->getBotPoints());
 		server->sendToClient(fd, PRIVMSG(BOT_NAME, BOT_NAME, client->getNickname(), (std::string)"You have " + result + " points."));
 		return ;
 	}

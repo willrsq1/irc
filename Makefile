@@ -21,6 +21,10 @@ SOURCES =	main.cpp \
 			Privmsg.cpp \
 			Part.cpp \
 			Kick.cpp \
+			Motd.cpp \
+			List.cpp \
+			Ping.cpp \
+			Quit.cpp \
 			Bot.cpp \
 			
 OBJS    = $(SOURCES:.cpp=.o)

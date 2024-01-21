@@ -18,6 +18,7 @@ class Channel
 		std::vector<int> operators;
 		std::vector<int> bannedUsers;
 		std::string name;
+		std::string topic;
 
 		Server * server;
 
@@ -44,6 +45,10 @@ class Channel
 		void sendToAllClientsExceptOne(int fd, std::string const & message);
 		void addClient(int fd, Client * client);
 		void removeClient(int fd);
+
+		int getNbClients();
+		std::string & getTopic();
+
 
 		void addBannedUser(int fd);
 		bool isBanned(int fd);

@@ -1,6 +1,6 @@
 #include "Channel.hpp"
 
-Channel::Channel(std::string name, Server * server): name(name), server(server)
+Channel::Channel(std::string name, Server * server): name(name), topic("No topic set"), server(server)
 {
 
 }
@@ -140,4 +140,14 @@ bool Channel::isBanned(int fd)
 			return (true);
 	}
 	return (false);
+}
+
+int Channel::getNbClients()
+{
+	return (this->clients.size());
+}
+
+std::string & Channel::getTopic()
+{
+	return (this->topic);
 }

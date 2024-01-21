@@ -10,7 +10,7 @@
 
 //x
 
-#define ERR_FATALERROR(msg) ((std::string)"ERROR : Fatal error: " + msg + "\r\n")
+#define ERR_FATALERROR(msg) ((std::string)":" + SERVER + " ERROR " + msg + "\r\n")
 
 #define SRC_CLI(client, username) ((std::string)client + "!" + username + "@" + HOST)
 
@@ -18,10 +18,13 @@
 
 #define JOIN(client, username, channel) ((std::string)":" + SRC_CLI(client, username) + " JOIN " + channel + "\r\n")
 
-#define PART(client, username, target, reason) ((std::string)":" + SRC_CLI(client, username) + " PART " + target + " is leaving the channel " + target + " for the reason: " + reason + "\r\n")
+#define PART(client, username, target, reason) ((std::string)":" + SRC_CLI(client, username) + " PART " + target +  ": " + reason + "\r\n")
 
 #define KICK(client, username, channel, target, reason) ((std::string)":" + SRC_CLI(client, username) + " KICK " + channel + " " + target + " :" + reason + "\r\n")
 
+#define PONG(client, token) ((std::string)":" + SERVER + " PONG " + client + " " + token + "\r\n")
+
+#define QUIT(client, username, reason) ((std::string)":" + SRC_CLI(client, username) + " QUIT " + client + " :Quit: " + reason + "\r\n")
 
 //001
 #define RPL_WELCOME(client, username) ((std::string)":" + SERVER + " 001 " + client + " :Welcome to the " + SERVER + " Network, " + SRC_CLI(client, username) + "\r\n")
@@ -34,15 +37,33 @@
 //005
 #define RPL_ISUPPORT(client) ((std::string)":" + SERVER + " 005 " + client + " PREFIX=(ov)@+ CHANTYPES=#&+ CHANMODES=" + CHANMODE + " NICKLEN=20 TOPICLEN=50 KICKLEN=50 MODES=3 NETWORK=" + SERVER + " CASEMAPPING=ascii :are supported by this server\r\n")
 
+//321
+#define RPL_LISTSTART(client) ((std::string)":" + SERVER + " 321 " + client + " Channel :Users Name\r\n")
+//322
+#define RPL_LIST(client, channel, nb_members, topic) ((std::string)":" + SERVER + " 322 " + client + " " + channel + " " + nb_members + " :" + topic + "\r\n")
+//323
+#define RPL_LISTEND(client) ((std::string)":" + SERVER + " 323 " + client + " :End of LIST\r\n")
+
+//372
+#define RPL_MOTD(client, line) ((std::string)":" + SERVER + " 372 " + client + " :- " + line + "\r\n")
+//375
+#define RPL_MOTDSTART(client) ((std::string)":" + SERVER + " 375 " + client + " :- " + SERVER + " Message of the day - \r\n")
+//376
+#define RPL_ENDOFMOTD(client) ((std::string)":" + SERVER + " 376 " + client + " :End of MOTD command \r\n")
+
 
 
 //401
 #define ERR_NOSUCHNICK(client, target) ((std::string)":" + SERVER + " 401 " + client + " " + target + " :No such nick/channel\r\n")
-
+//402
+#define ERR_NOSUCHSERVER(client) ((std::string)":" + SERVER + " 402 " + client + " " + SERVER + " :No such server\r\n")
 //403
 #define ERR_NOSUCHCHANNEL(client, channel) ((std::string)":" + SERVER + " 403 " + client + " " + channel + " :No such channel\r\n")
 //404
 #define ERR_CANNOTSENDTOCHAN(client, channel) ((std::string)":" + SERVER + " 404 " + client + " " + channel + " :Cannot send to channel\r\n")
+
+//409
+#define ERR_NOORIGIN(client) ((std::string)":" + SERVER + " 409 " + client + " :No origin specified\r\n")
 
 //411
 #define ERR_NORECIPIENT(client, command) ((std::string)":" + SERVER + " 411 " + client + " :No recipient given " + command + "\r\n")

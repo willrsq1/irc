@@ -35,6 +35,10 @@ void	Server::registerCommand()
 	commands["JOIN"] = &join;
 	commands["PART"] = &part;
 	commands["KICK"] = &kick;
+	commands["MOTD"] = &motd;
+	commands["LIST"] = &list;
+	commands["PING"] = &ping;
+	commands["QUIT"] = &quit;
 	// functions["/join"] = &join;
 	// functions["/leave"] = &leave;
 	// functions["/msg"] = &msg;
@@ -161,7 +165,10 @@ void	Server::newMessage(int i)
 		throw std::runtime_error("Error: recv failed");
 	if (ret == 0)
 	{
-		disconnectClient(*clients[pollfds[i].fd]);
+		std::vector<std::string> tokens;
+		tokens.push_back("QUIT");
+		tokens.push_back("");
+		quit(*this, *clients[pollfds[i].fd], tokens);
 		return ;
 	}
 	else if (ret == 512)
