@@ -19,8 +19,11 @@ class Channel
 		std::vector<int> bannedUsers;
 		std::string name;
 		std::string topic;
-
 		Server * server;
+		std::string mode;
+
+		bool limit;
+		int limitValue;
 
 		Channel();
 
@@ -51,7 +54,18 @@ class Channel
 
 
 		void addBannedUser(int fd);
+		void removeBannedUser(int fd);
 		bool isBanned(int fd);
+
+
+		std::string & getMode();
+		bool isSetMode(char c);
+		void setMode(char c);
+		void unsetMode(char c);
+		void setLimitValue(int limitValue);
+		int getLimitValue();
+		bool limitIsReached();
+		void setLimit(bool limit);
 };
 
 #include "Client.hpp"

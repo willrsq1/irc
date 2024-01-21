@@ -1,6 +1,6 @@
 #include "../Includes/Channel.hpp"
 
-Channel::Channel(std::string name, Server * server): name(name), topic("No topic set"), server(server)
+Channel::Channel(std::string name, Server * server): name(name), topic("No topic set"), server(server), mode(""), limit(false), limitValue(0)
 {
 
 }
@@ -96,7 +96,6 @@ void Channel::removeClient(int fd)
 {
 	for (it_clients it = this->clients.begin(); it != this->clients.end(); it++)
 	{
-
 		if ((*it).second->getFd() == fd)
 		{
 			if (this->isOperator(fd))
@@ -132,6 +131,18 @@ void Channel::addBannedUser(int fd)
 	this->bannedUsers.push_back(fd);
 }
 
+void Channel::removeBannedUser(int fd)
+{
+	for (std::vector<int>::iterator it = bannedUsers.begin(); it != bannedUsers.end(); it++)
+	{
+		if (*it == fd)
+		{
+			bannedUsers.erase(it);
+			return ;
+		}
+	}
+}
+
 bool Channel::isBanned(int fd)
 {
 	for (std::vector<int>::iterator it = bannedUsers.begin(); it != bannedUsers.end(); it++)
@@ -150,4 +161,57 @@ int Channel::getNbClients()
 std::string & Channel::getTopic()
 {
 	return (this->topic);
+}
+
+std::string & Channel::getMode()
+{
+	return (this->mode);
+}
+
+bool Channel::isSetMode(char c)
+{
+	for (std::string::iterator it = this->mode.begin(); it != this->mode.end(); it++)
+	{
+		if (*it == c)
+			return (true);
+	}
+	return (false);
+}
+
+int Channel::getLimitValue()
+{
+	return (this->limitValue);
+}
+
+void Channel::setLimitValue(int limitValue)
+{
+	this->limitValue = limitValue;
+}
+
+void Channel::setMode(char c)
+{
+	if (this->isSetMode(c))
+		return ;
+	this->mode += c;
+}
+
+void Channel::unsetMode(char c)
+{
+	if (!this->isSetMode(c))
+		return ;
+	this->mode.erase(std::find(this->mode.begin(), this->mode.end(), c));
+}
+
+bool Channel::limitIsReached()
+{
+	if (this->limit == false)
+		return (false);
+	if (this->limitValue <= this->getNbClients())
+		return (true);
+	return (false);
+}
+
+void Channel::setLimit(bool limit)
+{
+	this->limit = limit;
 }

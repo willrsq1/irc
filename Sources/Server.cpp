@@ -37,6 +37,7 @@ void	Server::registerCommand()
 	commands["LIST"] = &list;
 	commands["PING"] = &ping;
 	commands["QUIT"] = &quit;
+	commands["MODE"] = &mode;
 	// functions["/join"] = &join;
 	// functions["/leave"] = &leave;
 	// functions["/msg"] = &msg;
@@ -200,6 +201,8 @@ void	Server::commandExecution(std::string & command, int clientSocket)
 {
 	std::vector<std::string> tokens = split(command, ' ');
 
+	std::cout << "Message from client nb [" << clientSocket - 3 << "] : " << command << std::endl;
+
 	if (tokens.size() > 0 && commands.find(tokens[0]) != commands.end())
 	{
 		if (tokens[0] != "PASS" && clients[clientSocket]->getHasPassword() == false)
@@ -215,7 +218,6 @@ void	Server::commandExecution(std::string & command, int clientSocket)
 			commands[tokens[0]](*this, *clients[clientSocket], tokens);
 		}
 	}
-	std::cout << "Message from client nb [" << clientSocket - 3 << "] : " << command << std::endl;
 
 }
 
@@ -241,6 +243,12 @@ void	Server::disconnectClient(Client & client)
 	for (it_channels it = client.getChannelsBegin(); it != client.getChannelsEnd(); it++)
 	{
 		it->second->removeClient(client.getFd());
+	}
+
+	for (it_channels it = channels.begin(); it != channels.end(); it++)
+	{
+		if (it->second->isBanned(client.getFd()) == true)
+			it->second->removeBannedUser(client.getFd());
 	}
 
 	clients.erase(client.getFd());

@@ -72,7 +72,7 @@ void	kickTheUser(Server & server, Client & client, std::vector<std::string> & co
 			channel.addBannedUser(target->getFd());
 			server.sendToClient(target->getFd(), KICK(client.getNickname(), client.getUsername(), channel.getName(), target->getNickname(), reason));
 			target->removeChannel(channel.getName());
-			server.sendToAllClientsInChannelExceptOne(client.getFd(), channel.getName(), KICK(client.getNickname(), client.getUsername(), channel.getName(), target->getNickname(), reason));
+			server.sendToAllClientsInChannel(channel.getName(), KICK(client.getNickname(), client.getUsername(), channel.getName(), target->getNickname(), reason));
 		}
 
 	}

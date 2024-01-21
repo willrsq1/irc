@@ -26,6 +26,8 @@
 
 #define QUIT(client, username, reason) ((std::string)":" + SRC_CLI(client, username) + " QUIT " + client + " :Quit: " + reason + "\r\n")
 
+#define MODE(client, username, channel, mode) ((std::string)":" + SRC_CLI(client, username) + " MODE " + channel + " " + mode + "\r\n")
+
 //001
 #define RPL_WELCOME(client, username) ((std::string)":" + SERVER + " 001 " + client + " :Welcome to the " + SERVER + " Network, " + SRC_CLI(client, username) + "\r\n")
 //002
@@ -43,6 +45,8 @@
 #define RPL_LIST(client, channel, nb_members, topic) ((std::string)":" + SERVER + " 322 " + client + " " + channel + " " + nb_members + " :" + topic + "\r\n")
 //323
 #define RPL_LISTEND(client) ((std::string)":" + SERVER + " 323 " + client + " :End of LIST\r\n")
+//324
+#define RPL_CHANNELMODEIS(client, channel, mode) ((std::string)":" + SERVER + " 324 " + client + " " + channel + " " + mode + "\r\n")
 
 //372
 #define RPL_MOTD(client, line) ((std::string)":" + SERVER + " 372 " + client + " :- " + line + "\r\n")
@@ -100,7 +104,12 @@
 #define ERR_PASSWDMISMATCH(client) ((std::string)":" + SERVER + " 464 " + client + " :Password incorrect\r\n")
 
 
+//471
+#define ERR_CHANNELISFULL(client, channel) ((std::string)":" + SERVER + " 471 " + client + " " + channel + " :Cannot join channel (+l)\r\n")
+//472
+#define ERR_UNKNOWNMODE(client, mode) ((std::string)":" + SERVER + " 472 " + client + " " + mode + " :is unknown mode char to me\r\n")
+
 //482
-#define ERR_CHANOPRIVSNEEDED(client, channel) ((std::string)":" + SERVER + " 482 " + client + " " + channel + " :You're not channel operator\r\n")
+#define ERR_CHANOPRIVSNEEDED(client, modechar) ((std::string)":" + SERVER + " 482 " + client + " " + modechar + " :You're not channel operator\r\n")
 
 #endif

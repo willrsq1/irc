@@ -1,5 +1,6 @@
 #include "Commands.hpp"
 
+void	joinChannel(Server & server, Client & client, std::string & token);
 void	newClientInChannel(Server & server, Client & client, Channel & channel);
 
 void	join(Server & server, Client & client, std::vector<std::string> & commands)
@@ -17,29 +18,44 @@ void	join(Server & server, Client & client, std::vector<std::string> & commands)
 		return ;
 	}
 
-	if (commands[1][0] != '#') // its not a channel	
-	{
-		server.sendToClient(client.getFd(), ERR_NOSUCHCHANNEL(client.getNickname(), commands[1]));
-		return ;
-	}
-
 	if (commands[1].size() == 1) // its just "#"
 	{
 		server.sendToClient(client.getFd(), ERR_FATALERROR("Invalid channel name. Cannot create channel."));
 	}
+	//look if channel already exists
 
-	if (commands[1].find(' ') != std::string::npos || commands[1].find(0x07) != std::string::npos || commands[1].find(',') != std::string::npos) // invalid characters from RFC
+	
+	std::vector<std::string> tokens = basicSplit(commands[1], ','); // different targets
+
+	for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it)
+	{
+
+		joinChannel(server, client, *it); // send message to each target
+
+	}
+
+}
+
+void	joinChannel(Server & server, Client & client, std::string & token)
+{
+	
+	if (token[0] != '#') // its not a channel	
+	{
+		server.sendToClient(client.getFd(), ERR_NOSUCHCHANNEL(client.getNickname(), token));
+		return ;
+	}
+
+	if (token.find(' ') != std::string::npos || token.find(0x07) != std::string::npos || token.find(',') != std::string::npos) // invalid characters from RFC
 	{
 		server.sendToClient(client.getFd(), ERR_FATALERROR("Invalid characters in channel name. Cannot create channel."));
 		return ;
 	}
 
-	//look if channel already exists
 
 	for (it_channels it = server.getChannelsBegin(); it != server.getChannelsEnd(); it++)
 	{
 
-		if (caseInsensitiveCheck(it->first, commands[1])) //does exist (CASE INSENSITIVE)
+		if (caseInsensitiveCheck(it->first, token)) //does exist (CASE INSENSITIVE)
 		{
 			if (it->second->isClientInChannel(client.getFd())) //if client already in channel
 			{
@@ -59,8 +75,8 @@ void	join(Server & server, Client & client, std::vector<std::string> & commands)
 
 	//if channel does not exist, create it and add the client to it
 
-	Channel * channel = new Channel(commands[1], &server);
-	server.addChannel(commands[1], channel); // register the new channel in the server !
+	Channel * channel = new Channel(token, &server);
+	server.addChannel(token, channel); // register the new channel in the server !
 	newClientInChannel(server, client, *channel);
 
 }
@@ -68,6 +84,12 @@ void	join(Server & server, Client & client, std::vector<std::string> & commands)
 void	newClientInChannel(Server & server, Client & client, Channel & channel)
 {
 	//add the client to the channel, and the channel to the client
+
+	if (channel.limitIsReached() == true)
+	{
+		server.sendToClient(client.getFd(), ERR_CHANNELISFULL(client.getNickname(), channel.getName()));
+		return ;
+	}
 
 	channel.addClient(client.getFd(), &client);
 	client.addChannel(channel.getName(), &channel);
@@ -81,3 +103,4 @@ void	newClientInChannel(Server & server, Client & client, Channel & channel)
 	// server.sendToClient(client.getFd(), RPL_MOTD(client.getNickname()));
 	// server.sendToClient(client.getFd(), RPL_ENDOFMOTD(client.getNickname()));
 }
+

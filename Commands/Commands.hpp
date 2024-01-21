@@ -18,8 +18,10 @@ void	motd(Server & server, Client & client, std::vector<std::string> & commands)
 void	list(Server & server, Client & client, std::vector<std::string> & commands);
 void	ping(Server & server, Client & client, std::vector<std::string> & commands);
 void	quit(Server & server, Client & client, std::vector<std::string> & commands);
+void	mode(Server & server, Client & client, std::vector<std::string> & commands);
 
-
+void    ModeLPlus(Server & server, Client & client, std::vector<std::string> & commands, Channel * channel);
+void    ModeLMinus(Server & server, Client & client, std::vector<std::string> & commands, Channel * channel);
 
 
 
