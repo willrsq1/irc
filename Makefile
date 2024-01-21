@@ -7,6 +7,12 @@ FLAGS   = -Wall -Wextra -Werror -std=c++98
 
 NAME    = ircserv
 
+
+### INCLUDES ###
+OBJ_PATH  = .Objs
+HEADER = Includes
+SRC_PATH  = .
+
 ### SOURCE FILES ###
 
 SOURCES =	Sources/main.cpp \
@@ -27,7 +33,8 @@ SOURCES =	Sources/main.cpp \
 			Commands/Quit.cpp \
 			Sources/Bot.cpp \
 			
-OBJS    = $(SOURCES:.cpp=.o)
+SRCS 	= $(addprefix $(SRC_PATH)/,$(SOURCES))
+OBJS    = $(addprefix $(OBJ_PATH)/,$(SOURCES:.cpp=.o))
 
 ### RULES ###
 
@@ -35,16 +42,39 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(CC) $(FLAGS) -o $@ $^
+	@echo "$(GREEN)Project successfully compiled\n"
 
-%.o: %.cpp %.hpp %/%.hpp
-	$(CC) $(FLAGS) -c -o $@ $<
-	
+
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.cpp $(HEADER)/*.hpp Commands/Commands.hpp Makefile
+	@mkdir -p $(@D)
+	@$(CC) $(FLAGS) -c -o $@ $< 
+	@echo "$(BLUE)Creating object file -> $(WHITE)$(notdir $@)... $(RED)[Done]$(NOC)"
+
 clean:
-	rm -rf $(OBJS)
+	@echo "$(GREEN)Supressing libraries files$(CYAN)"
+	@rm -rf $(OBJ_PATH)
 
-fclean: clean
-	rm -f $(NAME)
+fclean:
+	@echo "$(GREEN)Supressing libraries files$(CYAN)"
+	@rm -rf $(OBJ_PATH)
+	@rm -f $(NAME)
 
-re: fclean all
+re: fclean
+	@$(MAKE) all
+
+
+### COLORS ###
+NOC         = \033[0m
+BOLD        = \033[1m
+UNDERLINE   = \033[4m
+BLACK       = \033[1;30m
+RED         = \033[1;31m
+GREEN       = \033[1;32m
+YELLOW      = \033[1;33m
+BLUE        = \033[1;34m
+VIOLET      = \033[1;35m
+CYAN        = \033[1;36m
+WHITE       = \033[1;37m
+
 
 .PHONY: all clean fclean re template
