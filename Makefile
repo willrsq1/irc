@@ -20,6 +20,7 @@ SOURCES =	main.cpp \
 			User.cpp \
 			Privmsg.cpp \
 			Part.cpp \
+			Kick.cpp \
 			Bot.cpp \
 			
 OBJS    = $(SOURCES:.cpp=.o)

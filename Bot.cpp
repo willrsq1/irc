@@ -75,7 +75,7 @@ void	Bot::update()
 		else
 		{
 			std::string winners = getWinners();
-			server->sendToAllClientsFromBot(PRIVMSG(BOT_NAME, BOT_NAME, SERVER, (std::string)"Congratulations to the winners: " + winners + "!"));
+			server->sendToAllClientsFromBot(PRIVMSG(BOT_NAME, BOT_NAME, SERVER, (std::string)"Congratulations to the winner(s): " + winners + "!"));
 		}
 		mode = 0;
 		nbWinners = 0;
@@ -105,7 +105,7 @@ std::string Bot::getWinners()
 				else
 					winners_names += " ";
 				nbWinners--;
-				server->sendToClient(it2->second->getFd(), PRIVMSG(BOT_NAME, BOT_NAME, it2->second->getNickname(), "Congratulations ! You were one of the Winners ! You win 10 points."));
+				server->sendToClient(it2->second->getFd(), PRIVMSG(BOT_NAME, BOT_NAME, it2->second->getNickname(), "Congratulations ! You were one of the Winner(s) ! You win 10 points."));
 				it2->second->addBotPoints(10);
 			}
 		}

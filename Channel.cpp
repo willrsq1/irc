@@ -12,7 +12,14 @@ Channel::~Channel()
 
 void Channel::addClient(int fd, Client * client)
 {
-	this->clients[fd] = client;
+	if (isBanned(fd))
+	{
+		server->sendToClient(fd, ERR_FATALERROR("You are banned from this channel."));
+		return ;
+	}
+	clients[fd] = client;
+	if (operators.size() == 0)
+		setNewOperator(fd);
 }
 
 bool Channel::isClientInChannel(int fd)
@@ -54,17 +61,17 @@ void Channel::sendToAllClientsExceptOne(int fd, std::string const & message)
 	}
 }
 
-void Channel::addOperator(std::string const & nickname)
+void Channel::addOperator(int fd)
 {
-	this->operators.push_back(nickname);
+	this->operators.push_back(fd);
 }
 
-void Channel::removeOperator(std::string const & nickname)
+void Channel::removeOperator(int fd)
 {
-	for (std::vector<std::string>::iterator it = this->operators.begin(); it != this->operators.end(); it++)
+	for (std::vector<int>::iterator it = this->operators.begin(); it != this->operators.end(); it++)
 	{
 
-		if (*it == nickname)
+		if (*it == fd)
 		{
 			this->operators.erase(it);
 			return ;
@@ -73,12 +80,12 @@ void Channel::removeOperator(std::string const & nickname)
 	}
 }
 
-bool Channel::isOperator(std::string const & nickname)
+bool Channel::isOperator(int fd)
 {
-	for (std::vector<std::string>::iterator it = this->operators.begin(); it != this->operators.end(); it++)
+	for (std::vector<int>::iterator it = this->operators.begin(); it != this->operators.end(); it++)
 	{
 
-		if (*it == nickname)
+		if (*it == fd)
 			return (true);
 
 	}
@@ -92,8 +99,8 @@ void Channel::removeClient(int fd)
 
 		if ((*it).second->getFd() == fd)
 		{
-			if (this->isOperator((*it).second->getNickname()))
-				this->operators.erase(std::find(this->operators.begin(), this->operators.end(), (*it).second->getNickname()));
+			if (this->isOperator(fd))
+				this->operators.erase(std::find(this->operators.begin(), this->operators.end(), fd));
 			this->clients.erase(it);
 			break ;
 		}
@@ -109,13 +116,28 @@ void Channel::removeClient(int fd)
 
 	if (this->operators.size() == 0)
 	{
-		this->setNewOperator(this->clients.begin()->second->getNickname());
+		this->setNewOperator(this->clients.begin()->second->getFd());
 	}
 }
 
-void Channel::setNewOperator(std::string const & nickname)
+void Channel::setNewOperator(int fd)
 {
-	this->operators.push_back(nickname);
-	server->sendToClient(this->clients.begin()->second->getFd(), "you are now operator of this channel\r\n");
+	this->operators.push_back(fd);
+	server->sendToClient(fd, "you are now operator of this channel\r\n");
 	// server->sendToClient(this->clients.begin()->second->getFd(), MODE(this->clients.begin()->second->getNickname(), this->name, "+o", nickname));
+}
+
+void Channel::addBannedUser(int fd)
+{
+	this->bannedUsers.push_back(fd);
+}
+
+bool Channel::isBanned(int fd)
+{
+	for (std::vector<int>::iterator it = bannedUsers.begin(); it != bannedUsers.end(); it++)
+	{
+		if (*it == fd)
+			return (true);
+	}
+	return (false);
 }

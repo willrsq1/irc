@@ -15,7 +15,8 @@ class Channel
 	private:
 
 		std::map<int, Client *> clients;
-		std::vector<std::string> operators;
+		std::vector<int> operators;
+		std::vector<int> bannedUsers;
 		std::string name;
 
 		Server * server;
@@ -31,10 +32,10 @@ class Channel
 
 
 		//OPERATORS
-		void addOperator(std::string const & nickname);
-		void removeOperator(std::string const & nickname);
-		bool isOperator(std::string const & nickname);
-		void setNewOperator(std::string const & nickname);
+		void addOperator(int fd);
+		void removeOperator(int fd);
+		bool isOperator(int fd);
+		void setNewOperator(int fd);
 
 
 
@@ -43,6 +44,9 @@ class Channel
 		void sendToAllClientsExceptOne(int fd, std::string const & message);
 		void addClient(int fd, Client * client);
 		void removeClient(int fd);
+
+		void addBannedUser(int fd);
+		bool isBanned(int fd);
 };
 
 #include "Client.hpp"

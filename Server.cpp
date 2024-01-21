@@ -34,6 +34,7 @@ void	Server::registerCommand()
 	commands["PRIVMSG"] = &privmsg;
 	commands["JOIN"] = &join;
 	commands["PART"] = &part;
+	commands["KICK"] = &kick;
 	// functions["/join"] = &join;
 	// functions["/leave"] = &leave;
 	// functions["/msg"] = &msg;
@@ -196,18 +197,18 @@ void	Server::commandExecution(std::string & command, int clientSocket)
 
 	if (tokens.size() > 0 && commands.find(tokens[0]) != commands.end())
 	{
-		// if (tokens[0] != "PASS" && clients[clientSocket]->getHasPassword() == false)
-		// {
-		// 	sendToClient(clientSocket, ERR_FATALERROR("You must send connect with the right password first"));
-		// }
-		// else if ((*clients[clientSocket]).getIsRegistered() == false && tokens[0] != "PASS" && tokens[0] != "NICK" && tokens[0] != "USER")
-		// {
-		// 	sendToClient(clientSocket, ERR_NOTREGISTERED());
-		// }
-		// else
-		// {
+		if (tokens[0] != "PASS" && clients[clientSocket]->getHasPassword() == false)
+		{
+			sendToClient(clientSocket, ERR_FATALERROR("You must send connect with the right password first"));
+		}
+		else if ((*clients[clientSocket]).getIsRegistered() == false && tokens[0] != "PASS" && tokens[0] != "NICK" && tokens[0] != "USER")
+		{
+			sendToClient(clientSocket, ERR_NOTREGISTERED());
+		}
+		else
+		{
 			commands[tokens[0]](*this, *clients[clientSocket], tokens);
-		// }
+		}
 	}
 	std::cout << "Message from client nb [" << clientSocket - 3 << "] : " << command << std::endl;
 
@@ -373,4 +374,14 @@ bool Server::noRegisteredClients()
 Client * Server::getClientFromFd(int fd)
 {
 	return clients[fd];
+}
+
+Client * Server::getClientFromNickname(std::string const & nickname)
+{
+	for (it_clients it = clients.begin(); it != clients.end(); it++)
+	{
+		if (it->second->getNickname() == nickname)
+			return it->second;
+	}
+	return NULL;
 }

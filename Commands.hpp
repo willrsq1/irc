@@ -14,6 +14,7 @@ void	nick(Server & server, Client & client, std::vector<std::string> & commands)
 void	user(Server & server, Client & client, std::vector<std::string> & commands);
 void	privmsg(Server & server, Client & client, std::vector<std::string> & commands);
 void	part(Server & server, Client & client, std::vector<std::string> & commands);
+void	kick(Server & server, Client & client, std::vector<std::string> & commands);
 
 
 

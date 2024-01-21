@@ -98,6 +98,7 @@ class Server
 		void	sendAnswerToBot(int fd, std::string const & message);
 		bool    noRegisteredClients();
 		Client * getClientFromFd(int fd);
+		Client * getClientFromNickname(std::string const & nickname);
 		void 	sendToAllClientsFromBot(std::string const & message);
 		
 };

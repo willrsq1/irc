@@ -65,6 +65,11 @@ static void	sendmsg(Server & server, Client & client, std::vector<std::string> &
 			if (it->first == target) // if the channel exists
 			{
 				//gestion d'erreur a faire (ban, kick, etc)
+				if (it->second->isClientInChannel(client.getFd()) == false)
+				{
+					server.sendToClient(client.getFd(), ERR_NOTONCHANNEL(client.getNickname(), target));
+					return ;
+				}
 				if (it->second->isClientInChannel(client.getFd()))
 				{
 					server.sendToAllClientsInChannelExceptOne(client.getFd(), it->second->getName(), PRIVMSG(client.getNickname(), client.getUsername(), target, commands[2]));

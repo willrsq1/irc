@@ -20,6 +20,7 @@
 
 #define PART(client, username, target, reason) ((std::string)":" + SRC_CLI(client, username) + " PART " + target + " is leaving the channel " + target + " for the reason: " + reason + "\r\n")
 
+#define KICK(client, username, channel, target, reason) ((std::string)":" + SRC_CLI(client, username) + " KICK " + channel + " " + target + " :" + reason + "\r\n")
 
 
 //001
@@ -60,6 +61,8 @@
 //433
 #define ERR_NICKNAMEINUSE(client, nickname) ((std::string)":" + SERVER + " 433 " + client + " " + nickname + " :Nickname is already in use\r\n")
 
+//441
+#define ERR_USERNOTINCHANNEL(client, target, channel) ((std::string)":" + SERVER + " 441 " + client + " " + target + " " + channel + " :They aren't on that channel\r\n")
 //442
 #define ERR_NOTONCHANNEL(client, channel) ((std::string)":" + SERVER + " 442 " + client + " " + channel + " :You're not on that channel\r\n")
 
@@ -76,5 +79,7 @@
 #define ERR_PASSWDMISMATCH(client) ((std::string)":" + SERVER + " 464 " + client + " :Password incorrect\r\n")
 
 
+//482
+#define ERR_CHANOPRIVSNEEDED(client, channel) ((std::string)":" + SERVER + " 482 " + client + " " + channel + " :You're not channel operator\r\n")
 
 #endif

@@ -46,6 +46,11 @@ void	join(Server & server, Client & client, std::vector<std::string> & commands)
 				server.sendToClient(client.getFd(), ERR_FATALERROR("You are already in this channel"));
 				return ;
 			}
+			if (it->second->isBanned(client.getFd())) //if client is banned
+			{
+				server.sendToClient(client.getFd(), ERR_FATALERROR("You are banned from this channel"));
+				return ;
+			}
 			newClientInChannel(server, client, *it->second); //if not, add client to channel
 			return ;
 		}
