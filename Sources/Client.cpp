@@ -2,7 +2,7 @@
 
 Client::Client() {};
 
-Client::Client(int fd): hasPassword(false), hasSetNickname(false), isRegistered(false), botEnabled(false), nickname("NO_NICK"), iPoll(0), bot_points(0)
+Client::Client(int fd): hasPassword(false), hasSetNickname(false), isRegistered(false), botEnabled(true), nickname("NO_NICK"), iPoll(0), bot_points(0)
 {
 	this->my_fd = fd;
 	this->nickname = "Anonymous";

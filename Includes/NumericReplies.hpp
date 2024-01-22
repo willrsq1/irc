@@ -41,7 +41,7 @@
 //004
 #define RPL_MYINFO(client) ((std::string)":" + SERVER + " 004 " + client + " " + SERVER + " version 1.0 " + USERMODE + " " + CHANMODE + " " + CHANMODES_WITH_PARAMS + "\r\n")
 //005
-#define RPL_ISUPPORT(client) ((std::string)":" + SERVER + " 005 " + client + " PREFIX=@ CHANTYPES=# CASEMAPPIN=rfc1459 LINELEN=512 CHANMODES=itkol CHANLIMITS=10 NICKLEN=20 USERLEN=20 TOPICLEN=50 MODES=1 NETWORK=" + SERVER + " CASEMAPPING=ascii :are supported by this server\r\n")
+#define RPL_ISUPPORT(client) ((std::string)":" + SERVER + " 005 " + client + " PREFIX=@ CHANTYPES=# CASEMAPPIN=rfc1459 LINELEN=512 CHANMODES=itkol CHANLIMITS=10 NICKLEN=20 USERLEN=20 TOPICLEN=50 MODES=5 NETWORK=" + SERVER + " CASEMAPPING=ascii :are supported by this server\r\n")
 
 //221
 #define RPL_UMODEIS(client, mode) ((std::string)":" + SERVER + " 221 " + client + " " + mode + "\r\n")

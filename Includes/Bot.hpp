@@ -33,7 +33,7 @@ class Bot
 		void setServer(Server * server);
 
 		void receiveAnswer(int fd, std::string const & answer);
-
+		bool isAWinner(int fd);
 };
 
 #include "Server.hpp"

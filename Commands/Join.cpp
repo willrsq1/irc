@@ -21,6 +21,7 @@ void	join(Server & server, Client & client, std::vector<std::string> & commands)
 	if (commands[1].size() == 1 && commands[1][0] == '#') // its just "#"
 	{
 		server.sendToClient(client.getFd(), ERR_FATALERROR("Invalid channel name. Cannot create channel."));
+		return ;
 	}
 
 	if (commands[1] == "0") //part from all channels

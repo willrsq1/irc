@@ -336,12 +336,18 @@ void Server::sendToAllClients(std::string const & message)
 	}
 }
 
-void Server::sendToAllClientsFromBot(std::string const & message)
+void Server::sendToAllClientsFromBot(std::string const & message, bool sendToWinners)
 {
 	for (it_clients it = clients.begin(); it != clients.end(); it++)
 	{
 		if (it->second->getIsRegistered() == true && it->second->getBotEnabled() == true)
+		{
+			if (sendToWinners == false && bot.isAWinner(it->second->getFd()) == true)
+			{
+				continue ;
+			}
 			sendToClient(it->second->getFd(), message);
+		}
 	}
 }
 

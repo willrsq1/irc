@@ -71,6 +71,11 @@ void	topic(Server & server, Client & client, std::vector<std::string> & commands
 		}
 		else
 		{
+			if (commands[2].size() > TOPICLEN)
+			{
+				commands[2].resize(TOPICLEN);
+				server.sendToClient(client.getFd(), ERR_FATALERROR("Your topic was resized to: " + commands[2]));
+			}
 			channel->setTopic(commands[2], client.getNickname());
 			server.sendToAllClientsInChannel(channel->getName(), TOPIC(client.getNickname(), client.getUsername(), channel->getName(), commands[2]));
 			return ;

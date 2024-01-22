@@ -87,7 +87,7 @@ void	Bot::update()
 		// server->sendToAllClientsFromBot("Hello everyone ! I'm Jack, I am the bot of this server.\r\n");
 		// server->sendToAllClientsFromBot("I will ask you a question, the first one to answer correctly will win 10 points !\r\n");
 		// server->sendToAllClientsFromBot((std::string)"You can see your points by sending me a private message with the command: 'PRIVMSG " + BOT_NAME + " MY_POINTS'\r\n");
-		server->sendToAllClientsFromBot(PRIVMSG(BOT_NAME, BOT_NAME, SERVER, "Please answer this question correctly to win points: " + questions[questionNb]));
+		server->sendToAllClientsFromBot(PRIVMSG(BOT_NAME, BOT_NAME, SERVER, "Please answer this question correctly to win points: " + questions[questionNb]), true);
 		// server->sendToAllClientsFromBot((std::string)"To answer the question, just send me a private message with the answer: 'PRIVMSG " + BOT_NAME + " <answer>' \r\n");
 		// server->sendToAllClientsFromBot("The winners will be named in 90 seconds !\r\n");
 		mode++;
@@ -95,13 +95,13 @@ void	Bot::update()
 	}
 	else if (mode == 1)
 	{
-		server->sendToAllClientsFromBot(PRIVMSG(BOT_NAME, BOT_NAME, SERVER, "Only 60 seconds remaining to answer the question !"));
+		server->sendToAllClientsFromBot(PRIVMSG(BOT_NAME, BOT_NAME, SERVER, "Only 60 seconds remaining to answer the question !"), false);
 		mode++;
 		return ;
 	}
 	else if (mode == 2)
 	{
-		server->sendToAllClientsFromBot(PRIVMSG(BOT_NAME, BOT_NAME, SERVER, "Only 30 seconds remaining to answer the question..."));
+		server->sendToAllClientsFromBot(PRIVMSG(BOT_NAME, BOT_NAME, SERVER, "Only 30 seconds remaining to answer the question..."), false);
 		mode++;
 		return ;
 	}
@@ -109,12 +109,12 @@ void	Bot::update()
 	{
 		if (nbWinners == 0)
 		{
-			server->sendToAllClientsFromBot(PRIVMSG(BOT_NAME, BOT_NAME, SERVER, (std::string)"No one answered correctly... Too bad ! The right answer was: " + answers[questionNb]));
+			server->sendToAllClientsFromBot(PRIVMSG(BOT_NAME, BOT_NAME, SERVER, (std::string)"No one answered correctly... Too bad ! The right answer was: " + answers[questionNb]), true);
 		}
 		else
 		{
 			std::string winners = getWinners();
-			server->sendToAllClientsFromBot(PRIVMSG(BOT_NAME, BOT_NAME, SERVER, (std::string)"Congratulations to the winner(s): " + winners + "!"));
+			server->sendToAllClientsFromBot(PRIVMSG(BOT_NAME, BOT_NAME, SERVER, (std::string)"Congratulations to the winner(s): " + winners + "!"), true);
 		}
 		mode = 0;
 		nbWinners = 0;
@@ -216,4 +216,14 @@ void	Bot::receiveAnswer(int fd, std::string const & answer)
 	{
 		server->sendToClient(fd, PRIVMSG(BOT_NAME, BOT_NAME, nickname ,"Wrong answer !"));
 	}
+}
+
+bool Bot::isAWinner(int fd)
+{
+	for (std::vector<int>::iterator it = winners.begin(); it != winners.end(); ++it)
+	{
+		if (*it == fd)
+			return (true);
+	}
+	return (false);
 }

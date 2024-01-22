@@ -22,6 +22,7 @@
 #define BOT_NAME "BOT"
 #define USERLEN 20
 #define NICKLEN 20
+#define TOPICLEN 50
 #define USERMODE "usermodes:''"
 #define CHANMODE "chanmodes:'it'"
 #define CHANMODES_WITH_PARAMS "chanmodes_with_params:'klo'"
@@ -108,7 +109,7 @@ class Server
 		bool    noRegisteredClients();
 		Client * getClientFromFd(int fd);
 		Client * getClientFromNickname(std::string const & nickname);
-		void 	sendToAllClientsFromBot(std::string const & message);
+		void 	sendToAllClientsFromBot(std::string const & message, bool sendToWinners);
 		
 };
 
