@@ -196,6 +196,8 @@ void	Server::newMessage(int i)
 
 	socketBuff += buff;
 
+	if (socketBuff.empty())
+		return ;
 
 	size_t pos = socketBuff.find("\r\n");
 	if (pos == std::string::npos)
