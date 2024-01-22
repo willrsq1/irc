@@ -29,7 +29,7 @@ void	join(Server & server, Client & client, std::vector<std::string> & commands)
 		for (it_channels it = client.getChannelsBegin(); it != client.getChannelsEnd(); it++)
 		{
 			server.sendToAllClientsInChannel(it->first, PART(client.getNickname(), client.getUsername(), it->first, "Leaving"));
-			server.removeClientFromChannel(it->first, client.getFd());
+			it->second->removeClient(client.getFd());
 		}
 
 		client.leaveAllChannels();
