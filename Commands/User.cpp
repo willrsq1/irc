@@ -73,6 +73,6 @@ void	user(Server & server, Client & client, std::vector<std::string> & commands)
 	server.sendToClient(client.getFd(), RPL_MOTD(client.getNickname(), "Good luck ! -"));
 	server.sendToClient(client.getFd(), RPL_ENDOFMOTD(client.getNickname()));
 
-	server.sendToClient(client.getFd(), ERR_FATALERROR("The bot commands are :ENABLE, DISABLE, MY_POINTS, HELP"));
+	server.sendToClient(client.getFd(), (std::string)":" + SERVER + " 005 The bot commands are :ENABLE, DISABLE, MY_POINTS, HELP\r\n");
 
 }
